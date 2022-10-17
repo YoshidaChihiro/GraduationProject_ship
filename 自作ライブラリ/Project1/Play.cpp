@@ -47,7 +47,7 @@ void Play::Initialize()
 
 	objectManager->Reset();
 
-	Player* player = new Player(Vector3(0, -5, -10));
+	Player* player = new Player(Vector3(0, 0, -10));
 	objectManager->Add(player);
 
 	ParticleManager::GetInstance()->ClearDeadEffect();
