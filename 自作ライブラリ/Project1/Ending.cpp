@@ -2,7 +2,7 @@
 #include "Audio.h"
 #include "Input.h"
 #include "OBJLoader.h"
-#include"Object3D.h"
+#include "Object3D.h"
 
 Ending::Ending()
 {
@@ -15,7 +15,6 @@ Ending::Ending()
 	Object3D::SetLightGroup(lightGroup.get());
 	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightColor(0, { 1,1,1 });
-
 }
 
 
@@ -26,18 +25,23 @@ Ending::~Ending()
 void Ending::Initialize()
 {
 	isEnd = false;
+	next = Title;
 
-	camera->Initialize();
-	camera.get()->SetDistance(30);
-	camera.get()->SetTheta(0.5f);
 	Object3D::SetCamera(camera.get());
 	Object3D::SetLightGroup(lightGroup.get());
-
-	Audio::PlayBGM("BGM_Result", 0.1f * Audio::volume_bgm);
 }
 
 void Ending::Update()
 {
+	//ƒV[ƒ“Ø‚è‘Ö‚¦
+	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
+	{
+		Audio::AllStopSE();
+		ShutDown();
+		return;
+	}
+
+	//
 	camera->Update();
 	lightGroup->SetAmbientColor({ 1,1,1 });
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.2f,1 });
@@ -51,4 +55,3 @@ void Ending::PreDraw()
 void Ending::PostDraw()
 {
 }
-

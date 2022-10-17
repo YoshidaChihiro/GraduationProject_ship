@@ -54,7 +54,7 @@ void Window::CreateWidow(WINDOW_TYPE type)
 	{
 	case Window::WINDOW:
 		hwnd = CreateWindow(w.lpszClassName,//クラス名
-			L"GEOGLOCUS",			//タイトルバーの文字//
+			L"GraduationProject_ship",			//タイトルバーの文字//
 			WS_OVERLAPPEDWINDOW,	//標準的なウィンドウスタイル
 			CW_USEDEFAULT,			//表示X座標（OSに任せる）
 			CW_USEDEFAULT,			//表示Y座標（OSに任せる)
