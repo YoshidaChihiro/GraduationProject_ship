@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "InGameCamera.h"
 #include "LightGroup.h"
+#include "Sprite.h"
 
 class Title : public Scene
 {
@@ -17,4 +18,5 @@ private:
 	std::unique_ptr<InGameCamera> camera;
 	std::unique_ptr<LightGroup> lightGroup;
 
+	Sprite* logo = nullptr;
 };

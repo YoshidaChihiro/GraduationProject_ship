@@ -83,6 +83,9 @@ void Game::RoadAsset()
 		Texture::LoadTexture("number", "number.png");
 		Texture::LoadTexture("wind", "wind.png");
 
+		//title
+		Texture::LoadTexture("title_logo", "title/title_logo.png");
+
 		break; 
 	case 2:
 		//Objƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ

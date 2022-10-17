@@ -4,6 +4,7 @@
 #include "OBJLoader.h"
 #include "Object3D.h"
 #include "Sprite3D.h"
+#include "PtrDelete.h"
 
 Title::Title()
 {
@@ -17,11 +18,14 @@ Title::Title()
 	Object3D::SetLightGroup(lightGroup.get());
 	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightColor(0, { 1,1,1 });
+
+	logo = new Sprite();
 }
 
 
 Title::~Title()
 {
+	PtrDelete(logo);
 }
 
 void Title::Initialize()
@@ -53,6 +57,10 @@ void Title::Update()
 
 void Title::PreDraw()
 {
+	PipelineState::SetPipeline("Sprite");
+
+	XMFLOAT2 pos_logo = { 1920 / 2, 1080 / 2 };
+	logo->DrawSprite("title_logo", pos_logo);
 }
 
 void Title::PostDraw()
