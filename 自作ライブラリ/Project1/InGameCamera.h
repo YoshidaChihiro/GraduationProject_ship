@@ -11,6 +11,8 @@ public:
 	void Update();
 	void RotateYaxis(Vector2 arg_inputVec);
 
+	void AutoFocus(Vector3 arg_position);
+
 	void SetShake(const int arg_shakeTime, const float arg_shakePower);
 
 	bool IsShake() { return shakeFlag; }

@@ -30,7 +30,7 @@ void InGameCamera::Initialize()
 	//}
 	SetPhi(DirectX::XMConvertToRadians(-90));
 	SetTheta(120);
-	SetDistance(70);
+	SetDistance(35);
 	Update();
 }
 
@@ -80,6 +80,10 @@ void InGameCamera::RotateYaxis(Vector2 arg_inputVec)
 	dirty = true;
 }
 
+void InGameCamera::AutoFocus(Vector3 arg_position)
+{
+	target = arg_position;
+}
 
 void InGameCamera::SetShake(const int arg_shakeTime, const float arg_shakePower)
 {

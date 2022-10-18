@@ -47,7 +47,7 @@ void Play::Initialize()
 
 	objectManager->Reset();
 
-	Player* player = new Player(Vector3(0, 0, -10));
+	player = new Player(Vector3(0, 0, -10));
 	objectManager->Add(player);
 
 	ParticleManager::GetInstance()->ClearDeadEffect();
@@ -63,6 +63,7 @@ void Play::Update()
 		return;
 	}
 
+	//camera->AutoFocus(player->GetPosition());
 	camera->Update();
 	lightGroup->SetAmbientColor({ 1,1,1 });
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.2f,1 });

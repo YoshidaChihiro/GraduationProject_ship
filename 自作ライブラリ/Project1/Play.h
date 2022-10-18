@@ -5,6 +5,8 @@
 #include "ObjectManager.h"
 #include "CollisionManager.h"
 
+class Player;
+
 class Play :public Scene
 {
 public:
@@ -21,4 +23,5 @@ private:
 	ObjectManager* objectManager = nullptr;
 	CollisionManager* collisionManager = nullptr;
 
+	Player* player = nullptr;
 };

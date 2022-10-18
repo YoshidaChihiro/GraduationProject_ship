@@ -21,18 +21,18 @@ public:
 
 private:
 	//帆入力による移動
-	void MovePos_mast();
+	void MovePos_sail();
 	//キーボード入力による移動(デバッグ用)
 	void MovePos_key();
+	//移動入力の切り替え
+	bool isInputMode_sail = false;
+	bool isInputMode_key = true;
 
 	float DegreeToRadian(const float degree);
 
 	FBXModel* myModel = nullptr;
 
 	Vector3 pos_first = {};
-	Vector3 pos = {};
-	Vector3 rotation = {};
-	Vector3 velocity = {};
 	const float speed_move = 1.0f;
 
 	//外部デバイスからの入力
