@@ -22,8 +22,6 @@ public:
 	void SetAngle(const float arg_angle);
 	//デバイスから受け取った風の強さを代入
 	void SetPower(const float arg_power);
-	//
-	bool GetIsSway();
 
 private:
 	//帆入力による移動
@@ -45,7 +43,7 @@ private:
 	//地面との判定
 	bool onGround = false;
 	Vector3 gravity = {};
-	const float gravity_acc = 0.1f;
+	const float gravity_acc = 0.02f;
 
 	//コースアウト判定
 	bool isCourseOut = false;
@@ -53,7 +51,5 @@ private:
 	//外部デバイスからの入力
 	float angle = 0.0f;//帆の角度
 	float power = 0.0f;//風の強さ
-	//外部デバイスへの出力
-	bool isSway = false;//ぶつかった時に振動させる
 
 };

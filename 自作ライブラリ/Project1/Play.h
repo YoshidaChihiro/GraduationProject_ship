@@ -27,6 +27,11 @@ private:
 	ObjectManager* objectManager = nullptr;
 	CollisionManager* collisionManager = nullptr;
 
+	//カメラ振れ
+	bool isSway = false;
+	int counter_sway = 0;
+	void SwayTime();
+
 	//プレイヤー
 	Player* player = nullptr;
 	//コース外

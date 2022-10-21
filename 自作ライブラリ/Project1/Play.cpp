@@ -46,9 +46,12 @@ void Play::Initialize()
 	Object3D::SetCamera(camera.get());
 	Object3D::SetLightGroup(lightGroup.get());
 
+	isSway = false;
+	counter_sway = 0;
+
 	objectManager->Reset();
 
-	player = new Player(Vector3(0, 10, -10));
+	player = new Player(Vector3(25, 10, -10));
 	objectManager->Add(player);
 
 	//コース外や壁
@@ -91,8 +94,24 @@ void Play::Update()
 	}
 
 	//プレイヤーの接地判定
-	player->SetOnGround(PlayerOnGround());
-	player->SetIsCourseOut(CourseOut());
+	bool onGround = PlayerOnGround();
+	player->SetOnGround(onGround);
+	//プレイヤーの順路外判定
+	bool isCourseOut = CourseOut();
+	player->SetIsCourseOut(isCourseOut);
+
+	if (isCourseOut && !isSway)
+	{
+		//振動
+		const int time = 5;
+		const float power = 0.4f;
+		camera->SetShake(time, power);
+		isSway = true;
+	}
+	if (isSway  && !camera->IsShake())
+	{
+		isSway = false;
+	}
 
 	camera->AutoFocus(player->GetPosition());
 	camera->Update();
@@ -187,4 +206,8 @@ bool Play::CourseOut()
 	}
 
 	return courseOut;
+}
+
+void Play::SwayTime()
+{
 }

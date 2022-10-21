@@ -36,7 +36,6 @@ void Player::Initialize()
 
 	angle = 90.0f;
 	power = 0.01f;
-	isSway = false;
 }
 
 void Player::Update()
@@ -89,7 +88,6 @@ void Player::DrawReady()
 		ImGui::DragFloat("power_wind", &power, 0.01f, 0.0f, 1.0f);
 		ImGui::Text("angle_mast : %f\n", angle);
 		ImGui::Text("power_wind : %f\n", power);
-		ImGui::Checkbox("isSway\n", &isSway);
 		ImGui::End();
 	}
 
@@ -134,11 +132,6 @@ void Player::SetAngle(const float arg_angle)
 void Player::SetPower(const float arg_power)
 {
 	power = arg_power;
-}
-
-bool Player::GetIsSway()
-{
-	return isSway;
 }
 
 void Player::MovePos_sail()
