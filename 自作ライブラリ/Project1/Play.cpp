@@ -63,7 +63,7 @@ void Play::Update()
 		return;
 	}
 
-	//camera->AutoFocus(player->GetPosition());
+	camera->AutoFocus(player->GetPosition());
 	camera->Update();
 	lightGroup->SetAmbientColor({ 1,1,1 });
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.2f,1 });

@@ -28,7 +28,7 @@ void Player::Initialize()
 	velocity = {};
 
 	angle = 90.0f;
-	power = 0.1f;
+	power = 0.01f;
 	isSway = false;
 }
 
@@ -45,8 +45,6 @@ void Player::Update()
 		MovePos_key();
 	}
 
-	rotation = { 0.0f, 0.0f, angle - 90.0f };
-	Object::SetRotation(rotation);
 	Object::Update();
 }
 
@@ -104,10 +102,14 @@ bool Player::GetIsSway()
 
 void Player::MovePos_sail()
 {
-	const float angle_radian = DegreeToRadian(angle);
-	//角度をxzベクトルに変換
-	velocity.x = cos(angle_radian);
-	velocity.z = sin(angle_radian);
+	//回転させる
+	const float power_rotation = angle - 90.0f;
+	const float speed_rotation = 0.01f;
+	rotation.z += power_rotation * speed_rotation;
+
+	//前方向に進む(ローカル座標のZ+方向)
+	velocity.x = Object::GetMatWorld().r[1].m128_f32[0];
+	velocity.z = Object::GetMatWorld().r[1].m128_f32[1];
 
 	position += velocity * speed_move * power;
 }
