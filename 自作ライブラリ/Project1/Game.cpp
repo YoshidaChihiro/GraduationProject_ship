@@ -99,7 +99,7 @@ void Game::RoadAsset()
 		break;
 	case 4:
 		//FBXファイルの読み込み
-		FBXManager::LoadModelFile("player", "Box", false);
+		FBXManager::LoadModelFile("box", "Box", false);
 		FBXManager::LoadModelFile("ship", "ship_demo", false);
 
 		//WAVファイルの読み込み

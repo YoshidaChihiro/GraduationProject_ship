@@ -6,6 +6,7 @@
 #include "CollisionManager.h"
 
 class Player;
+class CourseSquare;
 
 class Play :public Scene
 {
@@ -18,10 +19,18 @@ public:
 	void PostDraw() override;
 
 private:
+	bool PlayerOnGround();
+	bool CourseOut();
+
 	std::unique_ptr<InGameCamera> camera;
 	std::unique_ptr<LightGroup> lightGroup;
 	ObjectManager* objectManager = nullptr;
 	CollisionManager* collisionManager = nullptr;
 
+	//プレイヤー
 	Player* player = nullptr;
+	//コース外
+	std::vector<CourseSquare*> courses_out;
+	//コース地面
+	CourseSquare* course_ground = nullptr;
 };

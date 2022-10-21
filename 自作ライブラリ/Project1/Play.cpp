@@ -6,6 +6,7 @@
 #include "Audio.h"
 #include "Input.h"
 #include "Player.h"
+#include "CourseSquare.h"
 
 Play::Play()
 {
@@ -47,8 +48,34 @@ void Play::Initialize()
 
 	objectManager->Reset();
 
-	player = new Player(Vector3(0, 0, -10));
+	player = new Player(Vector3(0, 10, -10));
 	objectManager->Add(player);
+
+	//コース外や壁
+	//内側
+	CourseSquare* course_inside = new CourseSquare(Vector3(0, 1, 0), Vector3(10, 3, 10));
+	objectManager->Add(course_inside);
+	courses_out.push_back(course_inside);
+	//奥側
+	CourseSquare* course_upside = new CourseSquare(Vector3(0, 1, 50), Vector3(100, 3, 10));
+	objectManager->Add(course_upside);
+	courses_out.push_back(course_upside);
+	//手前側
+	CourseSquare* course_downside = new CourseSquare(Vector3(0, 1, -50), Vector3(100, 3, 10));
+	objectManager->Add(course_downside);
+	courses_out.push_back(course_downside);
+	//右側
+	CourseSquare* course_rightside = new CourseSquare(Vector3(50, 1, 0), Vector3(10, 3, 100));
+	objectManager->Add(course_rightside);
+	courses_out.push_back(course_rightside);
+	//左側
+	CourseSquare* course_lightside = new CourseSquare(Vector3(-50, 1, 0), Vector3(10, 3, 100));
+	objectManager->Add(course_lightside);
+	courses_out.push_back(course_lightside);
+
+	//地面
+	course_ground = new CourseSquare(Vector3(0, 0, 0), Vector3(100, 1, 100));
+	objectManager->Add(course_ground);
 
 	ParticleManager::GetInstance()->ClearDeadEffect();
 }
@@ -63,10 +90,14 @@ void Play::Update()
 		return;
 	}
 
+	//プレイヤーの接地判定
+	player->SetOnGround(PlayerOnGround());
+	player->SetIsCourseOut(CourseOut());
+
 	camera->AutoFocus(player->GetPosition());
 	camera->Update();
 	lightGroup->SetAmbientColor({ 1,1,1 });
-	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.2f,1 });
+	lightGroup->SetDirLightDir(0, { 0.2f,-0.5f,0.7f,1 });
 	lightGroup->Update();
 	objectManager->Update();
 	collisionManager->CheckAllCollisions();
@@ -91,3 +122,69 @@ void Play::PostDraw()
 	}
 }
 
+bool Play::PlayerOnGround()
+{
+	const Vector3 poition_player = player->GetPosition();
+	const Vector3 scale_player = player->GetScale();
+
+	const Vector3 poition_course = course_ground->GetPosition();
+	const Vector3 scale_course = course_ground->GetScale();
+
+
+	float aXR = poition_player.x + (scale_player.x / 2.0f);//Aの右
+	float aXL = poition_player.x - (scale_player.x / 2.0f);//Aの左
+	float aYU = poition_player.y + (scale_player.y / 2.0f);//Aの上
+	float aYD = poition_player.y - (scale_player.y / 2.0f);//Aの下
+	float aZF = poition_player.z - (scale_player.z / 2.0f);//Aの前
+	float aZB = poition_player.z + (scale_player.z / 2.0f);//Aの奥
+
+	float bXR = poition_course.x + (scale_course.x / 2.0f);//Bの右
+	float bXL = poition_course.x - (scale_course.x / 2.0f);//Bの左
+	float bYU = poition_course.y + (scale_course.y / 2.0f);//Bの上
+	float bYD = poition_course.y - (scale_course.y / 2.0f);//Bの下
+	float bZF = poition_course.z - (scale_course.z / 2.0f);//Bの前
+	float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
+
+
+	bool onGround = aXR > bXL && aXL < bXR&&
+		aYU > bYD && aYD < bYU&&
+		aZF < bZB&& aZB > bZF;
+
+	return onGround;
+}
+
+bool Play::CourseOut()
+{
+	const Vector3 poition_player = player->GetPosition();
+	const Vector3 scale_player = player->GetScale();
+
+	bool courseOut = false;
+
+	for (int i = 0; i < courses_out.size(); i++)
+	{
+		const Vector3 poition_course = courses_out[i]->GetPosition();
+		const Vector3 scale_course = courses_out[i]->GetScale();
+
+
+		float aXR = poition_player.x + (scale_player.x / 2.0f);//Aの右
+		float aXL = poition_player.x - (scale_player.x / 2.0f);//Aの左
+		float aYU = poition_player.y + (scale_player.y / 2.0f);//Aの上
+		float aYD = poition_player.y - (scale_player.y / 2.0f);//Aの下
+		float aZF = poition_player.z - (scale_player.z / 2.0f);//Aの前
+		float aZB = poition_player.z + (scale_player.z / 2.0f);//Aの奥
+
+		float bXR = poition_course.x + (scale_course.x / 2.0f);//Bの右
+		float bXL = poition_course.x - (scale_course.x / 2.0f);//Bの左
+		float bYU = poition_course.y + (scale_course.y / 2.0f);//Bの上
+		float bYD = poition_course.y - (scale_course.y / 2.0f);//Bの下
+		float bZF = poition_course.z - (scale_course.z / 2.0f);//Bの前
+		float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
+
+		courseOut = courseOut ||
+			(aXR > bXL && aXL < bXR &&
+			aYU > bYD && aYD < bYU &&
+			aZF < bZB&& aZB > bZF);
+	}
+
+	return courseOut;
+}

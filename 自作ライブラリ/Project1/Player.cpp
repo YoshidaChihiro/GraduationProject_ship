@@ -3,6 +3,7 @@
 #include"Input.h"
 #include"DrawMode.h"
 #include"imgui.h"
+#include"CollisionManager.h"
 
 Player::Player(const Vector3& arg_pos)
 {
@@ -24,8 +25,14 @@ Player::~Player()
 void Player::Initialize()
 {
 	position = pos_first;
+	pos_prev = position;
 	rotation = {};
 	velocity = {};
+
+	onGround = false;
+	gravity = {};
+
+	isCourseOut = false;
 
 	angle = 90.0f;
 	power = 0.01f;
@@ -34,6 +41,8 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	pos_prev = position;
+
 	//ˆÚ“®
 	isInputMode_sail = !isInputMode_key;
 	if (isInputMode_sail)
@@ -45,12 +54,23 @@ void Player::Update()
 		MovePos_key();
 	}
 
+	//—Ž‰º
+	if (!onGround)
+	{
+		gravity.y -= gravity_acc;
+		position += gravity;
+	}
+	else
+	{
+		gravity = {};
+	}
+
 	Object::Update();
 }
 
 void Player::Draw()
 {
-	Object::CustomDraw(true);
+	Object::CustomDraw(true, true);
 }
 
 void Player::DrawReady()
@@ -66,7 +86,7 @@ void Player::DrawReady()
 
 		ImGui::Begin("DeviceInformation");
 		ImGui::DragFloat("angle_mast", &angle, 1.0f, 0.0f, 180.0f);
-		ImGui::InputFloat("power_wind", &power);
+		ImGui::DragFloat("power_wind", &power, 0.01f, 0.0f, 1.0f);
 		ImGui::Text("angle_mast : %f\n", angle);
 		ImGui::Text("power_wind : %f\n", power);
 		ImGui::Checkbox("isSway\n", &isSway);
@@ -83,6 +103,27 @@ void Player::DrawReady()
 	{
 		pipelineName = "FBX";
 	}
+}
+
+void Player::SetOnGround(const bool arg_onGround)
+{
+	//–ß‚·
+	if (!onGround && arg_onGround)
+	{
+		position = pos_prev;
+	}
+
+	onGround = arg_onGround;
+}
+
+void Player::SetIsCourseOut(const bool arg_isCourseOut)
+{
+	//–ß‚·
+	if (!isCourseOut && arg_isCourseOut)
+	{
+		position = pos_prev;
+	}
+	isCourseOut = arg_isCourseOut;
 }
 
 void Player::SetAngle(const float arg_angle)
