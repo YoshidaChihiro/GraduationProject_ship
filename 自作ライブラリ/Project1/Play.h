@@ -5,6 +5,7 @@
 #include "ObjectManager.h"
 #include "CollisionManager.h"
 
+class Arudino;
 class Player;
 class CourseSquare;
 
@@ -38,4 +39,7 @@ private:
 	std::vector<CourseSquare*> courses_out;
 	//コース地面
 	CourseSquare* course_ground = nullptr;
+
+	//
+	Arudino* arudino = nullptr;
 };

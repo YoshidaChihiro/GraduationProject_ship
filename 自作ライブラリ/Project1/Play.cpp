@@ -7,6 +7,8 @@
 #include "Input.h"
 #include "Player.h"
 #include "CourseSquare.h"
+#include "PtrDelete.h"
+#include "Arudino.h"
 
 Play::Play()
 {
@@ -29,12 +31,17 @@ Play::Play()
 	objectManager = ObjectManager::GetInstance();
 	objectManager->AddObjectsAtOnce();
 	ParticleEmitter::SetObjectManager(objectManager);
+
+	arudino = new Arudino();
+	arudino->Initialize();
 }
 
 
 Play::~Play()
 {
 	ParticleManager::GetInstance()->ClearDeadEffect();
+	arudino->End();
+	PtrDelete(arudino);
 }
 
 void Play::Initialize()
@@ -92,6 +99,16 @@ void Play::Update()
 		ShutDown();
 		return;
 	}
+
+	////////////////////////////////////
+	float power = arudino->ReceiveData();
+	power /= 710.0f;//スライドボリュームの最大値が710
+	//風の強さ
+	player->SetPower(power);
+
+	//風の向き
+	//player->SetAngle(90.0f);
+	////////////////////////////////////
 
 	//プレイヤーの接地判定
 	bool onGround = PlayerOnGround();

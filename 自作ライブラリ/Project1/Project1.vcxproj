@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClCompile Include="Alpha.cpp" />
     <ClCompile Include="AreaEffect.cpp" />
+    <ClCompile Include="Arudino.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="ColliderEditor.cpp" />
@@ -256,6 +257,7 @@
   <ItemGroup>
     <ClInclude Include="Alpha.h" />
     <ClInclude Include="AreaEffect.h" />
+    <ClInclude Include="Arudino.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="BaseCollider.h" />
     <ClInclude Include="BoxCollider.h" />
