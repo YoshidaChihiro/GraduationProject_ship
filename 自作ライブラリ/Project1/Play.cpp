@@ -32,16 +32,16 @@ Play::Play()
 	objectManager->AddObjectsAtOnce();
 	ParticleEmitter::SetObjectManager(objectManager);
 
-	arudino = new Arudino();
-	arudino->Initialize();
+	//arudino = new Arudino();
+	//arudino->Initialize();
 }
 
 
 Play::~Play()
 {
 	ParticleManager::GetInstance()->ClearDeadEffect();
-	arudino->End();
-	PtrDelete(arudino);
+	//arudino->End();
+	//PtrDelete(arudino);
 }
 
 void Play::Initialize()
@@ -50,7 +50,12 @@ void Play::Initialize()
 	next = Ending;
 
 	camera->Initialize();
+	camera->SetDistance(12.0f);
+	camera->SetTheta(0.5f);
 	Object3D::SetCamera(camera.get());
+
+	lightGroup->SetAmbientColor({ 1,1,1 });
+	lightGroup->SetDirLightDir(0, { 0.2f,-0.5f,0.7f,1 });
 	Object3D::SetLightGroup(lightGroup.get());
 
 	isSway = false;
@@ -67,11 +72,11 @@ void Play::Initialize()
 	objectManager->Add(course_inside);
 	courses_out.push_back(course_inside);
 	//奥側
-	CourseSquare* course_upside = new CourseSquare(Vector3(0, 1, 50), Vector3(100, 3, 10));
+	CourseSquare* course_upside = new CourseSquare(Vector3(0, 1, 50), Vector3(90, 3, 10));
 	objectManager->Add(course_upside);
 	courses_out.push_back(course_upside);
 	//手前側
-	CourseSquare* course_downside = new CourseSquare(Vector3(0, 1, -50), Vector3(100, 3, 10));
+	CourseSquare* course_downside = new CourseSquare(Vector3(0, 1, -50), Vector3(90, 3, 10));
 	objectManager->Add(course_downside);
 	courses_out.push_back(course_downside);
 	//右側
@@ -92,6 +97,7 @@ void Play::Initialize()
 
 void Play::Update()
 {
+#ifdef _DEBUG
 	//シーン切り替え
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
 	{
@@ -100,11 +106,19 @@ void Play::Update()
 		return;
 	}
 
+	//初期化
+	if (Input::TriggerKey(DIK_R))
+	{
+		Initialize();
+		return;
+	}
+#endif
+
 	////////////////////////////////////
-	float power = arudino->ReceiveData();
-	power /= 710.0f;//スライドボリュームの最大値が710
-	//風の強さ
-	player->SetPower(power);
+	//float power = arudino->ReceiveData();
+	//power /= 710.0f;//スライドボリュームの最大値が710
+	////風の強さ
+	//player->SetPower(power);
 
 	//風の向き
 	//player->SetAngle(90.0f);
@@ -117,11 +131,12 @@ void Play::Update()
 	bool isCourseOut = CourseOut();
 	player->SetIsCourseOut(isCourseOut);
 
+	//衝突
 	if (isCourseOut && !isSway)
 	{
 		//振動
 		const int time = 5;
-		const float power = 0.4f;
+		const float power = 0.1f;
 		camera->SetShake(time, power);
 		isSway = true;
 	}
@@ -130,10 +145,11 @@ void Play::Update()
 		isSway = false;
 	}
 
-	camera->AutoFocus(player->GetPosition());
+	//カメラ
+	camera->SetPhi(-(player->GetRotation().y + 90.0f) * (3.14f / 180.0f));
+	camera->SetTarget(player->GetPosition() + (player->GetForwordVec() * 4.0f));
 	camera->Update();
-	lightGroup->SetAmbientColor({ 1,1,1 });
-	lightGroup->SetDirLightDir(0, { 0.2f,-0.5f,0.7f,1 });
+
 	lightGroup->Update();
 	objectManager->Update();
 	collisionManager->CheckAllCollisions();

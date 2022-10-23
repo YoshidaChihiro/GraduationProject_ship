@@ -12,6 +12,9 @@ public:
 	void Draw() override;
 	void DrawReady() override;
 
+	//前方のベクトル
+	Vector3 GetForwordVec();
+
 	//接地判定の結果を入れる
 	void SetOnGround(const bool arg_onGround);
 
@@ -28,9 +31,6 @@ private:
 	void MovePos_sail();
 	//キーボード入力による移動(デバッグ用)
 	void MovePos_key();
-	//移動入力の切り替え
-	bool isInputMode_sail = false;
-	bool isInputMode_key = true;
 
 	float DegreeToRadian(const float degree);
 
@@ -39,6 +39,7 @@ private:
 	Vector3 pos_first = {};
 	Vector3 pos_prev = {};
 	const float speed_move = 1.0f;
+	Vector3 forwordVec = {};
 
 	//地面との判定
 	bool onGround = false;

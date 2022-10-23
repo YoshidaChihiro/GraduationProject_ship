@@ -80,11 +80,6 @@ void InGameCamera::RotateYaxis(Vector2 arg_inputVec)
 	dirty = true;
 }
 
-void InGameCamera::AutoFocus(Vector3 arg_position)
-{
-	target = arg_position;
-}
-
 void InGameCamera::SetShake(const int arg_shakeTime, const float arg_shakePower)
 {
 	shakeTimer = 0;

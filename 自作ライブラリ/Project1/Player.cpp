@@ -35,23 +35,19 @@ void Player::Initialize()
 	isCourseOut = false;
 
 	angle = 90.0f;
-	power = 0.01f;
+	power = 0.1f;
 }
 
 void Player::Update()
 {
+	//押し返し用に前フレームの座標を格納
 	pos_prev = position;
 
 	//移動
-	isInputMode_sail = !isInputMode_key;
-	if (isInputMode_sail)
-	{
-		MovePos_sail();
-	}
-	if (isInputMode_key)
-	{
-		MovePos_key();
-	}
+	MovePos_sail();
+#ifdef _DEBUG
+	MovePos_key();
+#endif
 
 	//落下
 	if (!onGround)
@@ -64,7 +60,15 @@ void Player::Update()
 		gravity = {};
 	}
 
+
 	Object::Update();
+
+	//前方のベクトルを格納
+	forwordVec = {
+		Object::GetMatWorld().r[2].m128_f32[0],
+		Object::GetMatWorld().r[2].m128_f32[1],
+		Object::GetMatWorld().r[2].m128_f32[2]
+	};
 }
 
 void Player::Draw()
@@ -80,7 +84,7 @@ void Player::DrawReady()
 		ImGui::Begin("PlayerStates");
 		ImGui::Text("position : %f, %f, %f\n", position.x, position.y, position.z);
 		ImGui::Text("velocity : %f, %f, %f\n", velocity.x, velocity.y, velocity.z);
-		ImGui::Checkbox("inputmode : key\n", &isInputMode_key);
+		ImGui::Text("rotation : %f, %f, %f\n", rotation.x, rotation.y, rotation.z);
 		ImGui::End();
 
 		ImGui::Begin("DeviceInformation");
@@ -90,7 +94,6 @@ void Player::DrawReady()
 		ImGui::Text("power_wind : %f\n", power);
 		ImGui::End();
 	}
-
 #endif
 
 	if (Object3D::GetDrawShadow())
@@ -101,6 +104,11 @@ void Player::DrawReady()
 	{
 		pipelineName = "FBX";
 	}
+}
+
+Vector3 Player::GetForwordVec()
+{
+	return forwordVec;
 }
 
 void Player::SetOnGround(const bool arg_onGround)
@@ -139,91 +147,46 @@ void Player::MovePos_sail()
 	//回転させる
 	const float power_rotation = angle - 90.0f;
 	const float speed_rotation = 0.01f;
-	rotation.z += power_rotation * speed_rotation;
+	rotation.y += power_rotation * speed_rotation;
 
-	//前方向に進む(ローカル座標のZ+方向)
-	velocity.x = Object::GetMatWorld().r[1].m128_f32[0];
-	velocity.z = Object::GetMatWorld().r[1].m128_f32[1];
+	if (rotation.y < 0.0f)
+	{
+		rotation.y += 360.0f;
+	}
+	else if (rotation.y > 360.0f)
+	{
+		rotation.y -= 360.0f;
+	}
+
+	//前方向に進む
+	velocity = forwordVec;
 
 	position += velocity * speed_move * power;
 }
 
 void Player::MovePos_key()
 {
-	const float power_key = 0.05f;//加速度
-	const float antiPower_key = 0.03f;//減速度
+	//回転操作
+	const float angle_key = 1.0f;//回転
+	if (Input::DownKey(DIK_RIGHT) && angle < 180.0f)
+	{
+		angle += angle_key;
+	}
+	if (Input::DownKey(DIK_LEFT) && angle > 0.0f)
+	{
+		angle -= angle_key;
+	}
 
-	//前後移動
+	//速度操作
+	const float power_key = 0.01f;//加速度
 	if (Input::DownKey(DIK_UP))
 	{
-		velocity.z += power_key;
+		power += power_key;
 	}
 	if (Input::DownKey(DIK_DOWN))
 	{
-		velocity.z -= power_key;
+		power -= power_key;
 	}
-	//減速
-	if (!Input::DownKey(DIK_UP) && !Input::DownKey(DIK_DOWN) && velocity.z != 0.0f)
-	{
-		int pm = 1;//プラスかマイナスか
-		if (velocity.z > 0.0f)
-		{
-			pm = -1;
-		}
-		velocity.z += antiPower_key * pm;
-	}
-
-	//左右移動
-	if (Input::DownKey(DIK_RIGHT))
-	{
-		velocity.x += power_key;
-	}
-	if (Input::DownKey(DIK_LEFT))
-	{
-		velocity.x -= power_key;
-	}
-	//減速
-	if (!Input::DownKey(DIK_RIGHT) && !Input::DownKey(DIK_LEFT) && velocity.x != 0.0f)
-	{
-		int pm = 1;//プラスかマイナスか
-		if (velocity.x > 0.0f)
-		{
-			pm = -1;
-		}
-		velocity.x += antiPower_key * pm;
-	}
-
-	//最大速度に制限
-	const float speed_max = 10.0f;//最大速度
-	if (velocity.z > speed_max)
-	{
-		velocity.z = speed_max;
-	}
-	else if (velocity.z < -speed_max)
-	{
-		velocity.z = -speed_max;
-	}
-	if (velocity.x > speed_max)
-	{
-		velocity.x = speed_max;
-	}
-	if (velocity.x < -speed_max)
-	{
-		velocity.x = -speed_max;
-	}
-	//誤差の範囲で停止
-	const float deadzone = antiPower_key;
-	if (velocity.z < deadzone && velocity.z > -deadzone)
-	{
-		velocity.z = 0.0f;
-	}
-	if (velocity.x < deadzone && velocity.x > -deadzone)
-	{
-		velocity.x = 0.0f;
-	}
-
-	//座標変更
-	position += velocity * speed_move;
 }
 
 float Player::DegreeToRadian(const float degree)
