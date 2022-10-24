@@ -5,6 +5,7 @@ public:
 	enum SCENE
 	{
 		Title,
+		ModeSelect,
 		Play,
 		Ending,
 		Test,

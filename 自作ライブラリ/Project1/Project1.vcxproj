@@ -208,6 +208,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshCollider.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
+    <ClCompile Include="ModeSelect.cpp" />
     <ClCompile Include="NormalMapTestOBJ.cpp" />
     <ClCompile Include="NumberSprite.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="MeshCollider.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelParticle.h" />
+    <ClInclude Include="ModeSelect.h" />
     <ClInclude Include="NormalMapTestOBJ.h" />
     <ClInclude Include="NumberSprite.h" />
     <ClInclude Include="ObjectManager.h" />

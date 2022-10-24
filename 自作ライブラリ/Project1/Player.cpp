@@ -188,8 +188,3 @@ void Player::MovePos_key()
 		power -= power_key;
 	}
 }
-
-float Player::DegreeToRadian(const float degree)
-{
-	return degree * (3.141592654f / 180.0f);
-}

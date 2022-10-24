@@ -32,8 +32,6 @@ private:
 	//キーボード入力による移動(デバッグ用)
 	void MovePos_key();
 
-	float DegreeToRadian(const float degree);
-
 	FBXModel* myModel = nullptr;
 
 	Vector3 pos_first = {};

@@ -8,7 +8,7 @@
 
 Title::Title()
 {
-	next = Play;
+	next = ModeSelect;
 
 	camera = std::make_unique<InGameCamera>();
 	Object3D::SetCamera(camera.get());
@@ -31,8 +31,9 @@ Title::~Title()
 void Title::Initialize()
 {
 	isEnd = false;
-	next = Play;
+	next = ModeSelect;
 
+	camera->Initialize();
 	Object3D::SetCamera(camera.get());
 	Sprite3D::SetCamera(camera.get());
 	Object3D::SetLightGroup(lightGroup.get());

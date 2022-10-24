@@ -10,6 +10,7 @@
 #include "Texture.h"
 #include "Scene.h"
 #include "Title.h"
+#include "ModeSelect.h"
 #include "Play.h"
 #include "Alpha.h"
 #include "Ending.h"
@@ -86,7 +87,13 @@ void Game::RoadAsset()
 		//title
 		Texture::LoadTexture("title_logo", "title/title_logo.png");
 
-		break; 
+		//modeselect
+		Texture::LoadTexture("gamemode_normal", "modeselect/gamemode_normal.png");
+		Texture::LoadTexture("gamemode_time", "modeselect/gamemode_timeattack.png");
+		Texture::LoadTexture("gamemode_obstacle", "modeselect/gamemode_obstacle.png");
+		Texture::LoadTexture("gamemode_collect", "modeselect/gamemode_collect.png");
+
+		break;
 	case 2:
 		//Objƒ‚ƒfƒ‹‚Ì“Ç‚Ýž‚Ý
 		OBJLoader::LoadModelFile("box", "box.obj", false);
@@ -194,6 +201,7 @@ void Game::LoadFinish()
 	sceneManeger = SceneManager::GetInstance();
 	sceneManeger->Initialize();
 	sceneManeger->Add(Scene::SCENE::Title, new Title());
+	sceneManeger->Add(Scene::SCENE::ModeSelect, new ModeSelect());
 	sceneManeger->Add(Scene::SCENE::Play, new Play());
 	sceneManeger->Add(Scene::SCENE::Ending, new Ending());
 

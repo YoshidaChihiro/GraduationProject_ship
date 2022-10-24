@@ -146,7 +146,7 @@ void Play::Update()
 	}
 
 	//ƒJƒƒ‰
-	camera->SetPhi(-(player->GetRotation().y + 90.0f) * (3.14f / 180.0f));
+	camera->SetPhi(DirectX::XMConvertToRadians(-(player->GetRotation().y + 90.0f)));
 	camera->SetTarget(player->GetPosition() + (player->GetForwordVec() * 4.0f));
 	camera->Update();
 
