@@ -21,6 +21,10 @@ public:
 	//コースアウトの結果を入れる
 	void SetIsCourseOut(const bool arg_isCourseOut);
 
+	//入力を受け付けるか
+	void SetIsCanInput(const bool arg_isCanInput);
+	bool GetIsCanInput();
+
 	//デバイスから受け取った帆の角度を代入(0が右、反時計回り)
 	void SetAngle(const float arg_angle);
 	//デバイスから受け取った風の強さを代入
@@ -31,6 +35,8 @@ private:
 	void MovePos_sail();
 	//キーボード入力による移動(デバッグ用)
 	void MovePos_key();
+	//入力がないときなどに減速をする
+	void MovePos_brake();
 
 	FBXModel* myModel = nullptr;
 
@@ -46,6 +52,9 @@ private:
 
 	//コースアウト判定
 	bool isCourseOut = false;
+
+	//入力受付
+	bool isCanInput = false;
 
 	//外部デバイスからの入力
 	float angle = 0.0f;//帆の角度

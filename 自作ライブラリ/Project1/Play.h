@@ -8,6 +8,8 @@
 class Arudino;
 class Player;
 class CourseSquare;
+class GoalSquare;
+class TimerRecord;
 
 class Play :public Scene
 {
@@ -22,6 +24,7 @@ public:
 private:
 	bool PlayerOnGround();
 	bool CourseOut();
+	bool PlayerHitGoal();
 
 	std::unique_ptr<InGameCamera> camera;
 	std::unique_ptr<LightGroup> lightGroup;
@@ -30,15 +33,18 @@ private:
 
 	//カメラ振れ
 	bool isSway = false;
-	int counter_sway = 0;
-	void SwayTime();
+
+	//タイマー
+	TimerRecord* timer = nullptr;
 
 	//プレイヤー
 	Player* player = nullptr;
 	//コース外
 	std::vector<CourseSquare*> courses_out;
 	//コース地面
-	CourseSquare* course_ground = nullptr;
+	std::vector<CourseSquare*> courses_ground;
+	//ゴール地点
+	GoalSquare* goal = nullptr;
 
 	//
 	Arudino* arudino = nullptr;

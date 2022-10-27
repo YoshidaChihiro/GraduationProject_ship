@@ -34,6 +34,8 @@ void Player::Initialize()
 
 	isCourseOut = false;
 
+	isCanInput = false;
+
 	angle = 90.0f;
 	power = 0.1f;
 }
@@ -48,6 +50,10 @@ void Player::Update()
 #ifdef _DEBUG
 	MovePos_key();
 #endif
+	if (!isCanInput)
+	{
+		MovePos_brake();
+	}
 
 	//óéâ∫
 	if (!onGround)
@@ -88,7 +94,7 @@ void Player::DrawReady()
 		ImGui::End();
 
 		ImGui::Begin("DeviceInformation");
-		ImGui::DragFloat("angle_mast", &angle, 1.0f, 0.0f, 180.0f);
+		ImGui::DragFloat("angle_mast", &angle, 1.0f, 89.0f, 90.0f);
 		ImGui::DragFloat("power_wind", &power, 0.01f, 0.0f, 1.0f);
 		ImGui::Text("angle_mast : %f\n", angle);
 		ImGui::Text("power_wind : %f\n", power);
@@ -132,6 +138,16 @@ void Player::SetIsCourseOut(const bool arg_isCourseOut)
 	isCourseOut = arg_isCourseOut;
 }
 
+void Player::SetIsCanInput(const bool arg_isCanInput)
+{
+	isCanInput = arg_isCanInput;
+}
+
+bool Player::GetIsCanInput()
+{
+	return isCanInput;
+}
+
 void Player::SetAngle(const float arg_angle)
 {
 	angle = arg_angle;
@@ -145,9 +161,17 @@ void Player::SetPower(const float arg_power)
 void Player::MovePos_sail()
 {
 	//âÒì]Ç≥ÇπÇÈ
-	const float power_rotation = angle - 90.0f;
-	const float speed_rotation = 0.01f;
-	rotation.y += power_rotation * speed_rotation;
+	int abs_rotation = 0;//âÒì]ÇÃå¸Ç´
+	if (angle > 90.0f)
+	{
+		abs_rotation = 1;
+	}
+	else if (angle < 90.0f)
+	{
+		abs_rotation = -1;
+	}
+	const float speed_rotation = 0.1f;
+	rotation.y += power * speed_rotation * abs_rotation;
 
 	if (rotation.y < 0.0f)
 	{
@@ -158,6 +182,17 @@ void Player::MovePos_sail()
 		rotation.y -= 360.0f;
 	}
 
+	//ë¨ìxè„å¿
+	const float speed_max = 1.0f;
+	if (power > speed_max)
+	{
+		power = speed_max;
+	}
+	else if (power < -speed_max)
+	{
+		power = -speed_max;
+	}
+
 	//ëOï˚å¸Ç…êiÇﬁ
 	velocity = forwordVec;
 
@@ -166,15 +201,19 @@ void Player::MovePos_sail()
 
 void Player::MovePos_key()
 {
-	//âÒì]ëÄçÏ
-	const float angle_key = 1.0f;//âÒì]
-	if (Input::DownKey(DIK_RIGHT) && angle < 180.0f)
+	if (!isCanInput)
 	{
-		angle += angle_key;
+		return;
 	}
-	if (Input::DownKey(DIK_LEFT) && angle > 0.0f)
+
+	//âÒì]ëÄçÏ
+	if (Input::DownKey(DIK_RIGHT) && angle < 91.0f)
 	{
-		angle -= angle_key;
+		angle++;
+	}
+	if (Input::DownKey(DIK_LEFT) && angle > 89.0f)
+	{
+		angle--;
 	}
 
 	//ë¨ìxëÄçÏ
@@ -186,5 +225,24 @@ void Player::MovePos_key()
 	if (Input::DownKey(DIK_DOWN))
 	{
 		power -= power_key;
+	}
+}
+
+void Player::MovePos_brake()
+{
+	const float antiPower = power / 50;//å∏ë¨ìx
+
+	//0Ç…ãﬂÇ√ÇØÇÈ
+	if (power < -antiPower)
+	{
+		power += antiPower;
+	}
+	else if (power > antiPower)
+	{
+		power -= antiPower;
+	}
+	else
+	{
+		power = 0.0f;//äÆëSí‚é~
 	}
 }

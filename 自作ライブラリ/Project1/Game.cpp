@@ -93,6 +93,9 @@ void Game::RoadAsset()
 		Texture::LoadTexture("gamemode_obstacle", "modeselect/gamemode_obstacle.png");
 		Texture::LoadTexture("gamemode_collect", "modeselect/gamemode_collect.png");
 
+		//timer
+		Texture::LoadTexture("number_default", "number.png");
+
 		break;
 	case 2:
 		//Objƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ

@@ -196,6 +196,7 @@
     <ClCompile Include="Create3DObject.cpp" />
     <ClCompile Include="CreateFigure.cpp" />
     <ClCompile Include="ComputeShade.cpp" />
+    <ClCompile Include="GoalSquare.cpp" />
     <ClCompile Include="Grass.cpp" />
     <ClCompile Include="GSShaderTestObj.cpp" />
     <ClCompile Include="InGameCamera.cpp" />
@@ -238,8 +239,8 @@
     <ClCompile Include="Sprite3D.cpp" />
     <ClCompile Include="TextureResource.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TimeLimit.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerRecord.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="TitleText.cpp" />
     <ClCompile Include="TouchAbleObject.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="CreateFigure.h" />
     <ClInclude Include="ComputeShade.h" />
     <ClInclude Include="GameSettingParam.h" />
+    <ClInclude Include="GoalSquare.h" />
     <ClInclude Include="Grass.h" />
     <ClInclude Include="GSShaderTestObj.h" />
     <ClInclude Include="InGameCamera.h" />
@@ -337,8 +339,8 @@
     <ClInclude Include="Sprite3D.h" />
     <ClInclude Include="TextureResource.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TimeLimit.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerRecord.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="TitleText.h" />
     <ClInclude Include="TouchAbleObject.h" />
