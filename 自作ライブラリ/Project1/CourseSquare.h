@@ -1,6 +1,6 @@
 #pragma once
 #include "Object.h"
-#include "FBXModel.h"
+#include "OBJModel.h"
 
 class CourseSquare : public Object
 {
@@ -13,6 +13,6 @@ public:
 	void DrawReady() override;
 
 private:
-	FBXModel* myModel = nullptr;
+	OBJModel* myModel = nullptr;
 
 };

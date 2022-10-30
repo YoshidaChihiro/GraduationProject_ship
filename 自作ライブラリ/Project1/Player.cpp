@@ -1,14 +1,14 @@
 #include "Player.h"
-#include "FBXManager.h"
-#include"Input.h"
-#include"DrawMode.h"
-#include"imgui.h"
-#include"CollisionManager.h"
+#include "OBJLoader.h"
+#include "Input.h"
+#include "DrawMode.h"
+#include "imgui.h"
+#include "CollisionManager.h"
 
 Player::Player(const Vector3& arg_pos)
 {
 	//ƒAƒjƒ[ƒVƒ‡ƒ“—p‚Éƒ‚ƒfƒ‹‚Ìƒ|ƒCƒ“ƒ^‚ðŠi”[
-	myModel = FBXManager::GetModel("ship");
+	myModel = OBJLoader::GetModel("ship");
 	//ƒ‚ƒfƒ‹‚Ì¶¬
 	Create(myModel);
 
@@ -79,7 +79,7 @@ void Player::Update()
 
 void Player::Draw()
 {
-	Object::CustomDraw(true, true);
+	Object::CustomDraw(false, true);
 }
 
 void Player::DrawReady()
@@ -94,7 +94,7 @@ void Player::DrawReady()
 		ImGui::End();
 
 		ImGui::Begin("DeviceInformation");
-		ImGui::DragFloat("angle_mast", &angle, 1.0f, 89.0f, 90.0f);
+		ImGui::DragFloat("angle_mast", &angle, 1.0f, 0.0f, 180.0f);
 		ImGui::DragFloat("power_wind", &power, 0.01f, 0.0f, 1.0f);
 		ImGui::Text("angle_mast : %f\n", angle);
 		ImGui::Text("power_wind : %f\n", power);
@@ -102,14 +102,7 @@ void Player::DrawReady()
 	}
 #endif
 
-	if (Object3D::GetDrawShadow())
-	{
-		pipelineName = "FBXShadowMap";
-	}
-	else
-	{
-		pipelineName = "FBX";
-	}
+	pipelineName = "BasicObj";
 }
 
 Vector3 Player::GetForwordVec()
@@ -161,17 +154,8 @@ void Player::SetPower(const float arg_power)
 void Player::MovePos_sail()
 {
 	//‰ñ“]‚³‚¹‚é
-	int abs_rotation = 0;//‰ñ“]‚ÌŒü‚«
-	if (angle > 90.0f)
-	{
-		abs_rotation = 1;
-	}
-	else if (angle < 90.0f)
-	{
-		abs_rotation = -1;
-	}
-	const float speed_rotation = 0.1f;
-	rotation.y += power * speed_rotation * abs_rotation;
+	const float speed_rotation = (angle - 90.0f) / 100.0f;
+	rotation.y += power * speed_rotation;
 
 	if (rotation.y < 0.0f)
 	{
@@ -207,11 +191,11 @@ void Player::MovePos_key()
 	}
 
 	//‰ñ“]‘€ì
-	if (Input::DownKey(DIK_RIGHT) && angle < 91.0f)
+	if (Input::DownKey(DIK_RIGHT) && angle < 180.0f)
 	{
 		angle++;
 	}
-	if (Input::DownKey(DIK_LEFT) && angle > 89.0f)
+	if (Input::DownKey(DIK_LEFT) && angle > 0.0f)
 	{
 		angle--;
 	}

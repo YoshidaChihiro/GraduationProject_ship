@@ -9,6 +9,7 @@
 #include "TimerRecord.h"
 #include "Player.h"
 #include "CourseSquare.h"
+#include "CourseBuilder.h"
 #include "GoalSquare.h"
 #include "Arudino.h"
 
@@ -60,7 +61,7 @@ void Play::Initialize()
 	Object3D::SetCamera(camera.get());
 
 	lightGroup->SetAmbientColor({ 1,1,1 });
-	lightGroup->SetDirLightDir(0, { 0.2f,-0.5f,0.7f,1 });
+	lightGroup->SetDirLightDir(0, { 0.3f,-0.8f,0.3f,1 });
 	Object3D::SetLightGroup(lightGroup.get());
 
 	isSway = false;
@@ -70,39 +71,21 @@ void Play::Initialize()
 
 	objectManager->Reset();
 
-	player = new Player(Vector3(0, 10, 2));
+	player = new Player(Vector3(-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2));
 	objectManager->Add(player);
 
-	//直線コース
-	const float courseSize_width = 30.0f;
-	const float courseSize_depth = 300.0f;
-
-	//コース外や壁
-	//奥側
-	CourseSquare* course_upside = new CourseSquare(Vector3(0, 1, courseSize_depth + 25), Vector3(courseSize_width, 3, 50));
-	objectManager->Add(course_upside);
-	courses_out.push_back(course_upside);
-	//手前側
-	CourseSquare* course_downside = new CourseSquare(Vector3(0, 1, -5), Vector3(courseSize_width, 3, 10));
-	objectManager->Add(course_downside);
-	courses_out.push_back(course_downside);
-	//右側
-	CourseSquare* course_rightside = new CourseSquare(Vector3(courseSize_width / 2, 1, courseSize_depth / 2), Vector3(10, 3, courseSize_depth));
-	objectManager->Add(course_rightside);
-	courses_out.push_back(course_rightside);
-	//左側
-	CourseSquare* course_lightside = new CourseSquare(Vector3(-courseSize_width / 2, 1, courseSize_depth / 2), Vector3(10, 3, courseSize_depth));
-	objectManager->Add(course_lightside);
-	courses_out.push_back(course_lightside);
+	//コース壁
+	courses_wall = CourseBuilder::BuildCourse_RR();
 
 	//地面
-	CourseSquare* course_straight = new CourseSquare(Vector3(0, 0, courseSize_depth / 2), Vector3(courseSize_width, 1, courseSize_depth));
+	CourseSquare* course_straight = new CourseSquare(Vector3(0, 0, 0), Vector3(24 * CourseBuilder::onesize, 1, 24 * CourseBuilder::onesize));
 	objectManager->Add(course_straight);
 	courses_ground.push_back(course_straight);
 
-
 	//ゴール地点
-	goal = new GoalSquare(Vector3(0, 0, courseSize_depth), Vector3(courseSize_width, 2, 10));
+	goal = new GoalSquare(
+		Vector3(-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 1, -3 * CourseBuilder::onesize),
+		Vector3(3 * CourseBuilder::onesize, 0.5f, CourseBuilder::onesize));
 	objectManager->Add(goal);
 
 	ParticleManager::GetInstance()->ClearDeadEffect();
@@ -251,10 +234,10 @@ bool Play::CourseOut()
 
 	bool courseOut = false;
 
-	for (int i = 0; i < courses_out.size(); i++)
+	for (int i = 0; i < courses_wall.size(); i++)
 	{
-		const Vector3 poition_course = courses_out[i]->GetPosition();
-		const Vector3 scale_course = courses_out[i]->GetScale();
+		const Vector3 poition_course = courses_wall[i]->GetPosition();
+		const Vector3 scale_course = courses_wall[i]->GetScale();
 
 
 		float aXR = poition_player.x + (scale_player.x / 2.0f);//Aの右

@@ -1,6 +1,6 @@
 #pragma once
 #include "Object.h"
-#include "FBXModel.h"
+#include "OBJModel.h"
 
 class Player : public Object
 {
@@ -38,7 +38,7 @@ private:
 	//“ü—Í‚ª‚È‚¢‚Æ‚«‚È‚Ç‚ÉŒ¸‘¬‚ð‚·‚é
 	void MovePos_brake();
 
-	FBXModel* myModel = nullptr;
+	OBJModel* myModel = nullptr;
 
 	Vector3 pos_first = {};
 	Vector3 pos_prev = {};

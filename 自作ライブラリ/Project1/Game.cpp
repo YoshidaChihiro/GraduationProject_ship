@@ -102,19 +102,17 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("box", "box.obj", false);
 		OBJLoader::LoadModelFile("sphere", "sphere.obj", true);
 		OBJLoader::LoadModelFile("obBox", "bottomOriginBox.obj", false);
-		OBJLoader::LoadModelFile("plate", "plate.obj", false);		
+		OBJLoader::LoadModelFile("plate", "plate.obj", false);
+
+		OBJLoader::LoadModelFile("ship", "ship_demo.obj", false);
 		break;
 	case 3:
-		//Objモデルの読み込み
+		//WAVファイルの読み込み
+		//Audio::LoadFile("BGM_Title", "BGM/Title_BGM.wav");
 		break;
 	case 4:
 		//FBXファイルの読み込み
 		FBXManager::LoadModelFile("box", "Box", false);
-		FBXManager::LoadModelFile("ship", "ship_demo", false);
-
-		//WAVファイルの読み込み
-		//Audio::LoadFile("BGM_Title", "BGM/Title_BGM.wav");
-
 		break;
 	case 5:
 		//FBXアニメーションの登録

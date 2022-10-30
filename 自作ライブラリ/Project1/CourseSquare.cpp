@@ -1,10 +1,10 @@
 #include "CourseSquare.h"
-#include "FBXManager.h"
+#include "OBJLoader.h"
 
 CourseSquare::CourseSquare(const Vector3& arg_pos, const Vector3& arg_scale)
 {
 	//アニメーション用にモデルのポインタを格納
-	myModel = FBXManager::GetModel("box");
+	myModel = OBJLoader::GetModel("box");
 	//モデルの生成
 	Create(myModel);
 
@@ -31,10 +31,10 @@ void CourseSquare::Update()
 
 void CourseSquare::Draw()
 {
-	Object::CustomDraw(true, true);
+	Object::CustomDraw(false, true);
 }
 
 void CourseSquare::DrawReady()
 {
-	pipelineName = "FBX";
+	pipelineName = "BasicObj";
 }

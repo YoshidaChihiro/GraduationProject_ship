@@ -39,8 +39,8 @@ private:
 
 	//プレイヤー
 	Player* player = nullptr;
-	//コース外
-	std::vector<CourseSquare*> courses_out;
+	//コース壁
+	std::vector<CourseSquare*> courses_wall;
 	//コース地面
 	std::vector<CourseSquare*> courses_ground;
 	//ゴール地点
