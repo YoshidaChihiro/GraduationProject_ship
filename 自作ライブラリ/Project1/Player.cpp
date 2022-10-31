@@ -36,8 +36,10 @@ void Player::Initialize()
 
 	isCanInput = false;
 
+	angle_device = 90.0f;
+	power_device = 0.0f;
 	angle = 90.0f;
-	power = 0.1f;
+	power = 0.0f;
 }
 
 void Player::Update()
@@ -45,15 +47,19 @@ void Player::Update()
 	//押し返し用に前フレームの座標を格納
 	pos_prev = position;
 
+	//入力を受け付けない
+	if (!isCanInput)
+	{
+		power_device = 0.0f;
+		//angle_device = 90.0f;
+	}
+
 	//移動
 	MovePos_sail();
+	MovePos_linear();
 #ifdef _DEBUG
 	MovePos_key();
 #endif
-	if (!isCanInput)
-	{
-		MovePos_brake();
-	}
 
 	//落下
 	if (!onGround)
@@ -94,10 +100,10 @@ void Player::DrawReady()
 		ImGui::End();
 
 		ImGui::Begin("DeviceInformation");
-		ImGui::DragFloat("angle_mast", &angle, 1.0f, 0.0f, 180.0f);
-		ImGui::DragFloat("power_wind", &power, 0.01f, 0.0f, 1.0f);
-		ImGui::Text("angle_mast : %f\n", angle);
-		ImGui::Text("power_wind : %f\n", power);
+		ImGui::DragFloat("angle_device", &angle_device, 1.0f, 0.0f, 180.0f);
+		ImGui::DragFloat("power_device", &power_device, 0.01f, -1.0f, 1.0f);
+		ImGui::Text("angle : %f\n", angle);
+		ImGui::Text("power : %f\n", power);
 		ImGui::End();
 	}
 #endif
@@ -136,19 +142,14 @@ void Player::SetIsCanInput(const bool arg_isCanInput)
 	isCanInput = arg_isCanInput;
 }
 
-bool Player::GetIsCanInput()
+void Player::SetAngle(const float arg_angle_device)
 {
-	return isCanInput;
+	angle_device = arg_angle_device;
 }
 
-void Player::SetAngle(const float arg_angle)
+void Player::SetPower(const float arg_power_device)
 {
-	angle = arg_angle;
-}
-
-void Player::SetPower(const float arg_power)
-{
-	power = arg_power;
+	power_device = arg_power_device;
 }
 
 void Player::MovePos_sail()
@@ -166,17 +167,6 @@ void Player::MovePos_sail()
 		rotation.y -= 360.0f;
 	}
 
-	//速度上限
-	const float speed_max = 1.0f;
-	if (power > speed_max)
-	{
-		power = speed_max;
-	}
-	else if (power < -speed_max)
-	{
-		power = -speed_max;
-	}
-
 	//前方向に進む
 	velocity = forwordVec;
 
@@ -185,48 +175,50 @@ void Player::MovePos_sail()
 
 void Player::MovePos_key()
 {
-	if (!isCanInput)
-	{
-		return;
-	}
-
 	//回転操作
-	if (Input::DownKey(DIK_RIGHT) && angle < 180.0f)
+	if (Input::DownKey(DIK_RIGHT) && angle_device < 180.0f)
 	{
-		angle++;
+		angle_device++;
 	}
-	if (Input::DownKey(DIK_LEFT) && angle > 0.0f)
+	if (Input::DownKey(DIK_LEFT) && angle_device > 0.0f)
 	{
-		angle--;
+		angle_device--;
 	}
 
 	//速度操作
 	const float power_key = 0.01f;//加速度
-	if (Input::DownKey(DIK_UP))
+	if (Input::DownKey(DIK_UP) && power_device < 1.0f)
 	{
-		power += power_key;
+		power_device += power_key;
 	}
-	if (Input::DownKey(DIK_DOWN))
+	if (Input::DownKey(DIK_DOWN) && power_device > -1.0f)
 	{
-		power -= power_key;
+		power_device -= power_key;
 	}
 }
 
-void Player::MovePos_brake()
+void Player::MovePos_linear()
 {
-	const float antiPower = power / 50;//減速度
+	//帆の角度
+	angle = angle_device;
 
-	//0に近づける
-	if (power < -antiPower)
+
+	//風の強さを反映
+	const float add = 0.01f;
+	if (power < power_device)
 	{
-		power += antiPower;
+		if (power_device - power < add)
+		{
+			return;
+		}
+		power += add;
 	}
-	else if (power > antiPower)
+	else if (power > power_device)
 	{
-		power -= antiPower;
-	}
-	else
-	{
-		power = 0.0f;//完全停止
+		if (power - power_device < add)
+		{
+			return;
+		}
+		power -= add;
 	}
 }

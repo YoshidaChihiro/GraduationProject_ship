@@ -19,6 +19,7 @@ void TimerRecord::Initialize()
 	timer->Initialize();
 	seconds = 0.0f;
 	isCountDown = false;
+	position = { 960.0f,540.0f };
 }
 
 void TimerRecord::Update()
@@ -41,6 +42,7 @@ void TimerRecord::Update()
 			isAction = true;
 			timer->Initialize();
 			timer->SetLimit(limit_default);
+			position = { 960.0f,64.0f };
 		}
 	}
 }
@@ -50,13 +52,14 @@ void TimerRecord::Draw()
 	PipelineState::SetPipeline("Sprite");
 
 	int digit_seconds = std::to_string((int)seconds).size();
-	sprite_seconds->Draw(digit_seconds, "number_default", { 960.0f,64.0f });
+	sprite_seconds->Draw(digit_seconds, "number_default", position);
 }
 
 void TimerRecord::Start()
 {
 	isCountDown = true;
 	isAction = false;
+	position = { 960.0f,540.0f };
 	timer->Initialize();
 	timer->SetLimit(limit_countDown);
 }

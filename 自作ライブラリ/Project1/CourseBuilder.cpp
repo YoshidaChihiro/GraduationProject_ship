@@ -2,7 +2,7 @@
 #include "ObjectManager.h"
 #include "CourseSquare.h"
 
-const float CourseBuilder::onesize = 50.0f;
+const float CourseBuilder::onesize = 20.0f;
 
 std::vector<CourseSquare*> CourseBuilder::BuildCourse_RR()
 {

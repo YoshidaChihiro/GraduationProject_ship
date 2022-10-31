@@ -23,20 +23,21 @@ public:
 
 	//入力を受け付けるか
 	void SetIsCanInput(const bool arg_isCanInput);
-	bool GetIsCanInput();
 
-	//デバイスから受け取った帆の角度を代入(0が右、反時計回り)
-	void SetAngle(const float arg_angle);
+	//デバイスから受け取った帆の角度を代入
+	void SetAngle(const float arg_angle_device);
 	//デバイスから受け取った風の強さを代入
-	void SetPower(const float arg_power);
+	void SetPower(const float arg_power_device);
 
 private:
 	//帆入力による移動
 	void MovePos_sail();
 	//キーボード入力による移動(デバッグ用)
 	void MovePos_key();
-	//入力がないときなどに減速をする
-	void MovePos_brake();
+
+	//帆入力の値に寄せていく
+	void MovePos_linear();
+
 
 	OBJModel* myModel = nullptr;
 
@@ -57,6 +58,9 @@ private:
 	bool isCanInput = false;
 
 	//外部デバイスからの入力
+	float angle_device = 0.0f;//帆の角度
+	float power_device = 0.0f;//風の強さ
+
 	float angle = 0.0f;//帆の角度
 	float power = 0.0f;//風の強さ
 

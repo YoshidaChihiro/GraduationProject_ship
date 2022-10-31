@@ -23,6 +23,7 @@ private:
 	Timer* timer = nullptr;
 
 	NumberSprite* sprite_seconds;
+	XMFLOAT2 position = {};
 	float seconds = 0.0f;
 
 	const int limit_default = 999 * 60;

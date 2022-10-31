@@ -124,16 +124,13 @@ void Play::Update()
 	}
 
 	////////////////////////////////////
-	if (player->GetIsCanInput())
-	{
-		//float power = arudino->ReceiveData();
-		//power /= 710.0f;//スライドボリュームの最大値が710
-		////風の強さ
-		//player->SetPower(power);
+	//float power = arudino->ReceiveData();
+	//power /= 710.0f;//スライドボリュームの最大値が710
+	////風の強さ
+	//player->SetPower(power);
 
-		////風の向き
-		//player->SetAngle(90.0f);
-	}
+	////風の向き
+	//player->SetAngle(90.0f);
 	////////////////////////////////////
 
 	//プレイヤーの接地判定
