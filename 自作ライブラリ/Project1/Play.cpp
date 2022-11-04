@@ -17,7 +17,7 @@
 
 Play::Play()
 {
-	next = Ending;
+	next = Title;
 
 	camera = std::make_unique<InGameCamera>();
 	Object3D::SetCamera(camera.get());
@@ -58,7 +58,7 @@ Play::~Play()
 void Play::Initialize()
 {
 	isEnd = false;
-	next = Ending;
+	next = Title;
 
 	camera->Initialize();
 	camera->SetDistance(12.0f);
