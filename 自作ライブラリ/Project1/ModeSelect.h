@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "InGameCamera.h"
 #include "LightGroup.h"
-#include "Sprite3D.h"
+#include "Sprite.h"
 
 class ModeSelect : public Scene
 {
@@ -36,12 +36,7 @@ private:
 	void Chack_nextScene();
 
 	//表示用パネル
-	Sprite3D* panel_sprites[mode_numMax];
-	Vector3 panel_positions[mode_numMax];
-	const float panel_angles[mode_numMax] = {0,30,60,90};
+	Sprite* panel_sprites[mode_numMax];
 	Vector2 panel_scales[mode_numMax];
-
-	//
-	float angle_now = 0.0f;
 
 };

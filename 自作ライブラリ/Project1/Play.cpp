@@ -7,6 +7,7 @@
 #include "Audio.h"
 #include "Input.h"
 #include "TimerRecord.h"
+#include "RankingInGame.h"
 #include "Player.h"
 #include "CourseSquare.h"
 #include "CourseBuilder.h"
@@ -37,6 +38,8 @@ Play::Play()
 
 	timer = new TimerRecord();
 
+	rank = new RankingInGame();
+
 	//arudino = new Arudino();
 	//arudino->Initialize();
 }
@@ -46,6 +49,7 @@ Play::~Play()
 {
 	ParticleManager::GetInstance()->ClearDeadEffect();
 	PtrDelete(timer);
+	PtrDelete(rank);
 	//arudino->End();
 	//PtrDelete(arudino);
 }
@@ -68,6 +72,8 @@ void Play::Initialize()
 
 	timer->Initialize();
 	timer->Start();
+
+	rank->Initialize();
 
 	objectManager->Reset();
 
@@ -157,6 +163,9 @@ void Play::Update()
 	//タイマー
 	timer->Update();
 
+	//ランキング
+	rank->Update(1);
+
 	//カメラ
 	camera->SetPhi(DirectX::XMConvertToRadians(-(player->GetRotation().y + 90.0f)));
 	camera->SetTarget(player->GetPosition() + (player->GetForwordVec() * 4.0f));
@@ -172,6 +181,7 @@ void Play::Update()
 void Play::PreDraw()
 {
 	timer->Draw();
+	rank->Draw();
 
 	objectManager->DrawReady();
 

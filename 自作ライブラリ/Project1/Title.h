@@ -19,4 +19,8 @@ private:
 	std::unique_ptr<LightGroup> lightGroup;
 
 	Sprite* logo = nullptr;
+	Sprite* startConfig = nullptr;
+	float alphaStart = 1.0f;
+
+	bool sceneChangeStart = false;
 };

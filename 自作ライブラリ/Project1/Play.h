@@ -10,6 +10,7 @@ class Player;
 class CourseSquare;
 class GoalSquare;
 class TimerRecord;
+class RankingInGame;
 
 class Play :public Scene
 {
@@ -36,6 +37,9 @@ private:
 
 	//タイマー
 	TimerRecord* timer = nullptr;
+
+	//ランキング
+	RankingInGame* rank = nullptr;
 
 	//プレイヤー
 	Player* player = nullptr;

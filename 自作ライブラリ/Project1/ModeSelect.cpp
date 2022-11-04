@@ -7,7 +7,6 @@ ModeSelect::ModeSelect()
 	next = Play;
 
 	camera = std::make_unique<InGameCamera>();
-	Sprite3D::SetCamera(camera.get());
 
 	lightGroup.reset(LightGroup::Create());
 	lightGroup->SetDirLightActive(0, true);
@@ -16,7 +15,7 @@ ModeSelect::ModeSelect()
 
 	for (int i = 0; i < mode_numMax; i++)
 	{
-		panel_sprites[i] = new Sprite3D();
+		panel_sprites[i] = new Sprite();
 	}
 }
 
@@ -37,11 +36,9 @@ void ModeSelect::Initialize()
 	camera->SetDistance(130.0f);
 	camera->SetPhi(DirectX::XMConvertToRadians(-90));
 	camera->SetTheta(DirectX::XMConvertToRadians(0));
-	Sprite3D::SetCamera(camera.get());
 
 	mode = ModeSelect::NormalRace;
 
-	angle_now = 0.0f;
 	Mode_sprites();
 }
 
@@ -69,15 +66,21 @@ void ModeSelect::PreDraw()
 {
 	PipelineState::SetPipeline("BasicObj");
 
-	const std::string texNames[mode_numMax] = {
+	const std::string texNames[] = {
 		"gamemode_normal",
 		"gamemode_time",
 		"gamemode_obstacle",
 		"gamemode_collect",
 	};
+	const Vector2 positions[] = {
+		{480, 360},
+		{1440, 360},
+		{480, 720},
+		{1440, 720},
+	};
 	for (int i = 0; i < mode_numMax; i++)
 	{
-		panel_sprites[i]->DrawSprite(texNames[i], panel_positions[i], 0.0f, panel_scales[i], {1,1,1,1}, {0.5f, 0.5f}, true);
+		panel_sprites[i]->DrawSprite(texNames[i], positions[i], 0.0f, panel_scales[i]);
 	}
 }
 
@@ -107,32 +110,6 @@ void ModeSelect::Mode_sprites()
 		panel_scales[i] = smallsize;
 	}
 	panel_scales[(int)mode] = bigsize;
-
-	//âÒì]
-	const float angle_sub = angle_now - panel_angles[(int)mode];
-	const float angle_speed = 3.0f;
-	if (angle_sub != 0)
-	{
-		if (angle_sub > 0.0f)
-		{
-			angle_now -= angle_speed;
-		}
-		else
-		{
-			angle_now += angle_speed;
-		}
-	}
-
-	//ç¿ïW
-	const float distance = 50.0f;
-	for (int i = 0; i < mode_numMax; i++)
-	{
-		panel_positions[i] = {
-			0,
-			sin(DirectX::XMConvertToRadians(panel_angles[i] - angle_now + 180)) * distance,
-			cos(DirectX::XMConvertToRadians(panel_angles[i] - angle_now + 180)) * distance
-		};
-	}
 }
 
 void ModeSelect::Chack_nextScene()

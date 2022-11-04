@@ -86,6 +86,7 @@ void Game::RoadAsset()
 
 		//title
 		Texture::LoadTexture("title_logo", "title/title_logo.png");
+		Texture::LoadTexture("title_start", "title/title_start.png");
 
 		//modeselect
 		Texture::LoadTexture("gamemode_normal", "modeselect/gamemode_normal.png");
@@ -94,7 +95,12 @@ void Game::RoadAsset()
 		Texture::LoadTexture("gamemode_collect", "modeselect/gamemode_collect.png");
 
 		//timer
+		Texture::LoadTexture("timer_base", "ui_ingame/timer_base.png");
 		Texture::LoadTexture("number_default", "number.png");
+		Texture::LoadTexture("number_comma", "comma.png");
+
+		//ranking
+		Texture::LoadTexture("rank_base", "ui_ingame/rank_base.png");
 
 		break;
 	case 2:
