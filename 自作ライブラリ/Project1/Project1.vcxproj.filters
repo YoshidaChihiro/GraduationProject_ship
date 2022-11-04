@@ -360,6 +360,9 @@
     <ClCompile Include="RankingInGame.cpp">
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
+    <ClCompile Include="CourseObstacle.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -646,6 +649,9 @@
     </ClInclude>
     <ClInclude Include="RankingInGame.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="CourseObstacle.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

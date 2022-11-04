@@ -4,6 +4,7 @@
 #include "DrawMode.h"
 #include "imgui.h"
 #include "CollisionManager.h"
+#include "Easing.h"
 
 Player::Player(const Vector3& arg_pos)
 {
@@ -34,6 +35,12 @@ void Player::Initialize()
 
 	isCourseOut = false;
 
+	isHitObstacle = false;
+	count_hitObstacle = 0;
+	pos_backStep = {};
+	pos_hitStart = {};
+	rotation_hitStart_y = 0.0f;
+
 	isCanInput = false;
 
 	angle_device = 90.0f;
@@ -60,6 +67,7 @@ void Player::Update()
 #ifdef _DEBUG
 	MovePos_key();
 #endif
+	MovePos_Obstacle();
 
 	//落下
 	if (!onGround)
@@ -135,6 +143,19 @@ void Player::SetIsCourseOut(const bool arg_isCourseOut)
 		position = pos_prev;
 	}
 	isCourseOut = arg_isCourseOut;
+}
+
+void Player::HitObstacle()
+{
+	isHitObstacle = true;
+	pos_backStep = position + -velocity * 10.0f;
+	pos_hitStart = position;
+	rotation_hitStart_y = rotation.y;
+}
+
+bool Player::GetIsHitObstacle()
+{
+	return isHitObstacle;
 }
 
 void Player::SetIsCanInput(const bool arg_isCanInput)
@@ -221,4 +242,35 @@ void Player::MovePos_linear()
 		}
 		power -= add;
 	}
+}
+
+void Player::MovePos_Obstacle()
+{
+	if (!isHitObstacle)
+	{
+		return;
+	}
+	//カウント
+	const int limit_obstacle = 60;
+	if (count_hitObstacle > limit_obstacle)
+	{
+		isHitObstacle = false;
+		count_hitObstacle = 0;
+		isCanInput = true;
+		power = 0.0f;
+		return;
+	}
+
+
+	isCanInput = false;
+
+	//スリップ
+	rotation.y = Easing::EaseOutCirc(rotation_hitStart_y, rotation_hitStart_y + 360.0f, limit_obstacle, count_hitObstacle);
+
+	//バックステップ
+	position.x = Easing::EaseOutCirc(pos_hitStart.x, pos_backStep.x, limit_obstacle, count_hitObstacle);
+	position.y = Easing::EaseOutCirc(pos_hitStart.y, pos_backStep.y, limit_obstacle, count_hitObstacle);
+	position.z = Easing::EaseOutCirc(pos_hitStart.z, pos_backStep.z, limit_obstacle, count_hitObstacle);
+
+	count_hitObstacle++;
 }

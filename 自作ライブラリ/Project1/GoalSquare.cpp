@@ -22,7 +22,7 @@ GoalSquare::~GoalSquare()
 
 void GoalSquare::Initialize()
 {
-	color = {0.7f,0.0f,0.0f,1};
+	color = {0.0f,0.7f,0.0f,1};
 }
 
 void GoalSquare::Update()

@@ -9,6 +9,7 @@ class Arudino;
 class Player;
 class CourseSquare;
 class GoalSquare;
+class CourseObstacle;
 class TimerRecord;
 class RankingInGame;
 
@@ -26,6 +27,7 @@ private:
 	bool PlayerOnGround();
 	bool CourseOut();
 	bool PlayerHitGoal();
+	bool PlayerHitObstacle();
 
 	std::unique_ptr<InGameCamera> camera;
 	std::unique_ptr<LightGroup> lightGroup;
@@ -49,6 +51,10 @@ private:
 	std::vector<CourseSquare*> courses_ground;
 	//ÉSÅ[Éãínì_
 	GoalSquare* goal = nullptr;
+	//è·äQï®
+	std::vector<CourseObstacle*> courses_obstacle;
+	Vector3 playerForwordVec_stock = {};
+
 
 	//
 	Arudino* arudino = nullptr;

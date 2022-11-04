@@ -10,6 +10,7 @@
 #include "RankingInGame.h"
 #include "Player.h"
 #include "CourseSquare.h"
+#include "CourseObstacle.h"
 #include "CourseBuilder.h"
 #include "GoalSquare.h"
 #include "Arudino.h"
@@ -61,7 +62,7 @@ void Play::Initialize()
 
 	camera->Initialize();
 	camera->SetDistance(12.0f);
-	camera->SetTheta(0.5f);
+	camera->SetTheta(0.4f);
 	Object3D::SetCamera(camera.get());
 
 	lightGroup->SetAmbientColor({ 1,1,1 });
@@ -74,6 +75,8 @@ void Play::Initialize()
 	timer->Start();
 
 	rank->Initialize();
+
+	playerForwordVec_stock = {};
 
 	objectManager->Reset();
 
@@ -93,6 +96,11 @@ void Play::Initialize()
 		Vector3(-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 1, -3 * CourseBuilder::onesize),
 		Vector3(3 * CourseBuilder::onesize, 0.5f, CourseBuilder::onesize));
 	objectManager->Add(goal);
+
+	//障害物
+	CourseObstacle* obstacle = new CourseObstacle({ -10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2),1,2 * CourseBuilder::onesize }, { 3,3,3 });
+	objectManager->Add(obstacle);
+	courses_obstacle.push_back(obstacle);
 
 	ParticleManager::GetInstance()->ClearDeadEffect();
 }
@@ -146,19 +154,15 @@ void Play::Update()
 	bool isCourseOut = CourseOut();
 	player->SetIsCourseOut(isCourseOut);
 
-	////衝突
-	//if (isCourseOut && !isSway)
-	//{
-	//	//振動
-	//	const int time = 5;
-	//	const float power = 0.1f;
-	//	camera->SetShake(time, power);
-	//	isSway = true;
-	//}
-	//if (isSway  && !camera->IsShake())
-	//{
-	//	isSway = false;
-	//}
+	//障害物判定
+	bool isHitObstacle = PlayerHitObstacle();
+	if (isHitObstacle || isCourseOut)
+	{
+		//跳ね返す
+		player->HitObstacle();
+		playerForwordVec_stock = player->GetForwordVec();
+	}
+
 
 	//タイマー
 	timer->Update();
@@ -167,8 +171,15 @@ void Play::Update()
 	rank->Update(1);
 
 	//カメラ
-	camera->SetPhi(DirectX::XMConvertToRadians(-(player->GetRotation().y + 90.0f)));
-	camera->SetTarget(player->GetPosition() + (player->GetForwordVec() * 4.0f));
+	if (!player->GetIsHitObstacle())
+	{
+		camera->SetPhi(DirectX::XMConvertToRadians(-(player->GetRotation().y + 90.0f)));
+		camera->SetTarget(player->GetPosition() + (player->GetForwordVec() * 4.0f));
+	}
+	else
+	{
+		camera->SetTarget(player->GetPosition() + (playerForwordVec_stock * 4.0f));
+	}
 	camera->Update();
 
 	lightGroup->Update();
@@ -298,4 +309,40 @@ bool Play::PlayerHitGoal()
 		aZF < bZB&& aZB > bZF;
 
 	return hitGoal;
+}
+
+bool Play::PlayerHitObstacle()
+{
+	const Vector3 poition_player = player->GetPosition();
+	const Vector3 scale_player = player->GetScale();
+
+	bool hitObstacle = false;
+
+	for (int i = 0; i < courses_obstacle.size(); i++)
+	{
+		const Vector3 poition_course = courses_obstacle[i]->GetPosition();
+		const Vector3 scale_course = courses_obstacle[i]->GetScale();
+
+
+		float aXR = poition_player.x + (scale_player.x / 2.0f);//Aの右
+		float aXL = poition_player.x - (scale_player.x / 2.0f);//Aの左
+		float aYU = poition_player.y + (scale_player.y / 2.0f);//Aの上
+		float aYD = poition_player.y - (scale_player.y / 2.0f);//Aの下
+		float aZF = poition_player.z - (scale_player.z / 2.0f);//Aの前
+		float aZB = poition_player.z + (scale_player.z / 2.0f);//Aの奥
+
+		float bXR = poition_course.x + (scale_course.x / 2.0f);//Bの右
+		float bXL = poition_course.x - (scale_course.x / 2.0f);//Bの左
+		float bYU = poition_course.y + (scale_course.y / 2.0f);//Bの上
+		float bYD = poition_course.y - (scale_course.y / 2.0f);//Bの下
+		float bZF = poition_course.z - (scale_course.z / 2.0f);//Bの前
+		float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
+
+		hitObstacle = hitObstacle ||
+			(aXR > bXL && aXL < bXR&&
+				aYU > bYD && aYD < bYU&&
+				aZF < bZB&& aZB > bZF);
+	}
+
+	return hitObstacle;
 }

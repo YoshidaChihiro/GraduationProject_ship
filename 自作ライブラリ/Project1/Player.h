@@ -21,6 +21,10 @@ public:
 	//コースアウトの結果を入れる
 	void SetIsCourseOut(const bool arg_isCourseOut);
 
+	//障害物にぶつかった時
+	void HitObstacle();
+	bool GetIsHitObstacle();
+
 	//入力を受け付けるか
 	void SetIsCanInput(const bool arg_isCanInput);
 
@@ -38,6 +42,9 @@ private:
 	//帆入力の値に寄せていく
 	void MovePos_linear();
 
+	//障害物との衝突時
+	void MovePos_Obstacle();
+
 
 	OBJModel* myModel = nullptr;
 
@@ -53,6 +60,13 @@ private:
 
 	//コースアウト判定
 	bool isCourseOut = false;
+
+	//障害物衝突判定
+	bool isHitObstacle = false;
+	int count_hitObstacle = 0;
+	Vector3 pos_backStep = {};
+	Vector3 pos_hitStart = {};
+	float rotation_hitStart_y = 0.0f;
 
 	//入力受付
 	bool isCanInput = false;
