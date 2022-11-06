@@ -84,7 +84,7 @@ void Play::Initialize()
 	objectManager->Add(player);
 
 	//コース壁
-	courses_wall = CourseBuilder::BuildCourse_RR();
+	courses_wall = CourseBuilder::BuildCourse_CSV("RR.csv");
 
 	//地面
 	CourseSquare* course_straight = new CourseSquare(Vector3(0, 0, 0), Vector3(24 * CourseBuilder::onesize, 1, 24 * CourseBuilder::onesize));

@@ -27,7 +27,7 @@ void RankingInGame::Draw()
 {
 	PipelineState::SetPipeline("Sprite");
 
-	XMFLOAT2 position_base = { 1920 - 300,1080 - 150 };
+	XMFLOAT2 position_base = { 1920 - 300,1080 - 250 };
 	XMFLOAT2 position_rank = { position_base.x + 150, position_base.y};
 
 	sprite_rank->Draw(1,"number_default", position_rank);
