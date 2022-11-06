@@ -8,6 +8,7 @@
 #include "Input.h"
 #include "TimerRecord.h"
 #include "RankingInGame.h"
+#include "SpeedMeter.h"
 #include "Player.h"
 #include "CourseSquare.h"
 #include "CourseObstacle.h"
@@ -41,8 +42,12 @@ Play::Play()
 
 	rank = new RankingInGame();
 
+	speedMeter = new SpeedMeter();
+
+	//////////////////////////////
 	//arudino = new Arudino();
 	//arudino->Initialize();
+	//////////////////////////////
 }
 
 
@@ -51,8 +56,12 @@ Play::~Play()
 	ParticleManager::GetInstance()->ClearDeadEffect();
 	PtrDelete(timer);
 	PtrDelete(rank);
+	PtrDelete(speedMeter);
+
+	//////////////////////////////
 	//arudino->End();
 	//PtrDelete(arudino);
+	//////////////////////////////
 }
 
 void Play::Initialize()
@@ -75,6 +84,8 @@ void Play::Initialize()
 	timer->Start();
 
 	rank->Initialize();
+
+	speedMeter->Initialize();
 
 	playerForwordVec_stock = {};
 
@@ -137,15 +148,16 @@ void Play::Update()
 		player->SetIsCanInput(true);
 	}
 
-	////////////////////////////////////
-	//float power = arudino->ReceiveData();
-	//power /= 710.0f;//スライドボリュームの最大値が710
-	////風の強さ
+	//////////////////////////////
+	//arudino->ReceiveData();
+
+	//風の強さ
+	//float power = (arudino->GetData(0) + arudino->GetData(1)) / 2.0f;
 	//player->SetPower(power);
 
-	////風の向き
+	//風の向き
 	//player->SetAngle(90.0f);
-	////////////////////////////////////
+	//////////////////////////////
 
 	//プレイヤーの接地判定
 	bool onGround = PlayerOnGround();
@@ -170,6 +182,9 @@ void Play::Update()
 	//ランキング
 	rank->Update(1);
 
+	//速度
+	speedMeter->Update(player->GetPower() * 100);
+
 	//カメラ
 	if (!player->GetIsHitObstacle())
 	{
@@ -193,6 +208,7 @@ void Play::PreDraw()
 {
 	timer->Draw();
 	rank->Draw();
+	speedMeter->Draw();
 
 	objectManager->DrawReady();
 
@@ -274,8 +290,8 @@ bool Play::CourseOut()
 
 		courseOut = courseOut ||
 			(aXR > bXL && aXL < bXR &&
-			aYU > bYD && aYD < bYU &&
-			aZF < bZB && aZB > bZF);
+				aYU > bYD && aYD < bYU &&
+				aZF < bZB && aZB > bZF);
 	}
 
 	return courseOut;
@@ -304,9 +320,9 @@ bool Play::PlayerHitGoal()
 	float bZF = poition_course.z - (scale_course.z / 2.0f);//Bの前
 	float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
 
-	bool hitGoal = aXR > bXL && aXL < bXR&&
-		aYU > bYD && aYD < bYU&&
-		aZF < bZB&& aZB > bZF;
+	bool hitGoal = aXR > bXL && aXL < bXR &&
+		aYU > bYD && aYD < bYU &&
+		aZF < bZB && aZB > bZF;
 
 	return hitGoal;
 }
@@ -339,9 +355,9 @@ bool Play::PlayerHitObstacle()
 		float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
 
 		hitObstacle = hitObstacle ||
-			(aXR > bXL && aXL < bXR&&
-				aYU > bYD && aYD < bYU&&
-				aZF < bZB&& aZB > bZF);
+			(aXR > bXL && aXL < bXR &&
+				aYU > bYD && aYD < bYU &&
+				aZF < bZB && aZB > bZF);
 	}
 
 	return hitObstacle;

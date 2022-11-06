@@ -33,6 +33,8 @@ public:
 	//デバイスから受け取った風の強さを代入
 	void SetPower(const float arg_power_device);
 
+	float GetPower();
+
 private:
 	//帆入力による移動
 	void MovePos_sail();

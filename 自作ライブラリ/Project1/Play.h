@@ -12,6 +12,7 @@ class GoalSquare;
 class CourseObstacle;
 class TimerRecord;
 class RankingInGame;
+class SpeedMeter;
 
 class Play :public Scene
 {
@@ -42,6 +43,8 @@ private:
 
 	//ランキング
 	RankingInGame* rank = nullptr;
+	//速度
+	SpeedMeter* speedMeter = nullptr;
 
 	//プレイヤー
 	Player* player = nullptr;

@@ -237,6 +237,7 @@
     <ClCompile Include="ScreenCamera.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SmartPtr.cpp" />
+    <ClCompile Include="SpeedMeter.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Sprite3D.cpp" />
@@ -338,6 +339,7 @@
     <ClInclude Include="ScreenCamera.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SmartPtr.h" />
+    <ClInclude Include="SpeedMeter.h" />
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />

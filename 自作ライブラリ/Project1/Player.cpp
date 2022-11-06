@@ -173,6 +173,11 @@ void Player::SetPower(const float arg_power_device)
 	power_device = arg_power_device;
 }
 
+float Player::GetPower()
+{
+	return power;
+}
+
 void Player::MovePos_sail()
 {
 	//‰ñ“]‚³‚¹‚é
