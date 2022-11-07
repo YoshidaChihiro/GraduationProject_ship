@@ -207,21 +207,21 @@ void Play::Update()
 	timer->Update();
 
 	//ランキング
-	rank->Update(1);
+	//rank->Update(1);
 
 	//速度
 	speedMeter->Update(player->GetPower() * 100);
 
 	//リザルト表示
 	resultView->Update();
-	if (resultView->GetIsMode())
+	/*if (resultView->GetIsMode())
 	{
 		next = ModeSelect;
 		Audio::AllStopSE();
 		ShutDown();
 		return;
 	}
-	else if (resultView->GetIsRetry())
+	else */if (resultView->GetIsRetry())
 	{
 		Initialize();
 		Audio::AllStopSE();
@@ -257,7 +257,7 @@ void Play::Update()
 
 void Play::PreDraw()
 {
-	rank->Draw();
+	//rank->Draw();
 	speedMeter->Draw();
 
 	objectManager->DrawReady();

@@ -85,10 +85,12 @@ void ResultInGame::Update()
 	//Œˆ’è
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
 	{
+		isActive = false;
 		switch (select)
 		{
 		case 0:
 			isMode = true;
+			isActive = true;
 			break;
 		case 1:
 			isRetry = true;
@@ -99,7 +101,6 @@ void ResultInGame::Update()
 		default:
 			break;
 		}
-		isActive = false;
 	}
 }
 
