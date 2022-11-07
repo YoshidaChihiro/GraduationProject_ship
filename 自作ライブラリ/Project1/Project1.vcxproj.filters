@@ -267,9 +267,6 @@
     <ClCompile Include="TextureResource.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
-    <ClCompile Include="TitleText.cpp">
-      <Filter>ソース ファイル\GameText</Filter>
-    </ClCompile>
     <ClCompile Include="MapBox.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
@@ -318,9 +315,6 @@
     <ClCompile Include="Timer.cpp">
       <Filter>ソース ファイル\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="TimeLimit.cpp">
-      <Filter>ソース ファイル\GameText</Filter>
-    </ClCompile>
     <ClCompile Include="Pause.cpp">
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
@@ -341,6 +335,36 @@
     </ClCompile>
     <ClCompile Include="ModelParticle.cpp">
       <Filter>ソース ファイル\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="CourseSquare.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Arudino.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ModeSelect.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerRecord.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="GoalSquare.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CourseBuilder.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="RankingInGame.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="CourseObstacle.cpp">
+      <Filter>ソース ファイル\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SpeedMeter.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
+    <ClCompile Include="ResultInGame.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -581,14 +605,8 @@
     <ClInclude Include="ShadowMap.h">
       <Filter>ヘッダー ファイル\PostEffect</Filter>
     </ClInclude>
-    <ClInclude Include="TitleText.h">
-      <Filter>ヘッダー ファイル\GameText</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>ヘッダー ファイル\Tool</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeLimit.h">
-      <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
     <ClInclude Include="Pause.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
@@ -610,6 +628,36 @@
     </ClInclude>
     <ClInclude Include="ModelParticle.h">
       <Filter>ヘッダー ファイル\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="CourseSquare.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Arudino.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ModeSelect.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerRecord.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="GoalSquare.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CourseBuilder.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="RankingInGame.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="CourseObstacle.h">
+      <Filter>ヘッダー ファイル\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SpeedMeter.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultInGame.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

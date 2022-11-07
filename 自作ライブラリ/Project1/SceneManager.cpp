@@ -49,7 +49,6 @@ void SceneManager::Update()
 	if (currentScene->GetIsEnd())
 	{
 		Change(currentScene->NextScene());
-		currentScene->Update();
 	}
 }
 

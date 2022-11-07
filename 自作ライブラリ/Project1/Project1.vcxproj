@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClCompile Include="Alpha.cpp" />
     <ClCompile Include="AreaEffect.cpp" />
+    <ClCompile Include="Arudino.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="ColliderEditor.cpp" />
@@ -181,6 +182,9 @@
     <ClCompile Include="CollisionPrimitive.cpp" />
     <ClCompile Include="ComputeWrapper.cpp" />
     <ClCompile Include="ConsoleWindow.cpp" />
+    <ClCompile Include="CourseBuilder.cpp" />
+    <ClCompile Include="CourseObstacle.cpp" />
+    <ClCompile Include="CourseSquare.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="DebugText.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
@@ -194,6 +198,7 @@
     <ClCompile Include="Create3DObject.cpp" />
     <ClCompile Include="CreateFigure.cpp" />
     <ClCompile Include="ComputeShade.cpp" />
+    <ClCompile Include="GoalSquare.cpp" />
     <ClCompile Include="Grass.cpp" />
     <ClCompile Include="GSShaderTestObj.cpp" />
     <ClCompile Include="InGameCamera.cpp" />
@@ -206,6 +211,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshCollider.cpp" />
     <ClCompile Include="ModelParticle.cpp" />
+    <ClCompile Include="ModeSelect.cpp" />
     <ClCompile Include="NormalMapTestOBJ.cpp" />
     <ClCompile Include="NumberSprite.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
@@ -226,19 +232,21 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Bloom.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="RankingInGame.cpp" />
+    <ClCompile Include="ResultInGame.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScreenCamera.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SmartPtr.cpp" />
+    <ClCompile Include="SpeedMeter.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Sprite3D.cpp" />
     <ClCompile Include="TextureResource.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TimeLimit.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerRecord.cpp" />
     <ClCompile Include="Title.cpp" />
-    <ClCompile Include="TitleText.cpp" />
     <ClCompile Include="TouchAbleObject.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="Vector.cpp" />
@@ -255,6 +263,7 @@
   <ItemGroup>
     <ClInclude Include="Alpha.h" />
     <ClInclude Include="AreaEffect.h" />
+    <ClInclude Include="Arudino.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="BaseCollider.h" />
     <ClInclude Include="BoxCollider.h" />
@@ -267,6 +276,9 @@
     <ClInclude Include="CollisionTypes.h" />
     <ClInclude Include="ComputeWrapper.h" />
     <ClInclude Include="ConsoleWindow.h" />
+    <ClInclude Include="CourseBuilder.h" />
+    <ClInclude Include="CourseObstacle.h" />
+    <ClInclude Include="CourseSquare.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="DebugText.h" />
     <ClInclude Include="DirectionalLight.h" />
@@ -282,6 +294,7 @@
     <ClInclude Include="CreateFigure.h" />
     <ClInclude Include="ComputeShade.h" />
     <ClInclude Include="GameSettingParam.h" />
+    <ClInclude Include="GoalSquare.h" />
     <ClInclude Include="Grass.h" />
     <ClInclude Include="GSShaderTestObj.h" />
     <ClInclude Include="InGameCamera.h" />
@@ -295,6 +308,7 @@
     <ClInclude Include="MeshCollider.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelParticle.h" />
+    <ClInclude Include="ModeSelect.h" />
     <ClInclude Include="NormalMapTestOBJ.h" />
     <ClInclude Include="NumberSprite.h" />
     <ClInclude Include="ObjectManager.h" />
@@ -319,22 +333,24 @@
     <ClInclude Include="PtrDelete.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="QueryCallback.h" />
+    <ClInclude Include="RankingInGame.h" />
     <ClInclude Include="RaycastHit.h" />
+    <ClInclude Include="ResultInGame.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScreenCamera.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SmartPtr.h" />
+    <ClInclude Include="SpeedMeter.h" />
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Sprite3D.h" />
     <ClInclude Include="TextureResource.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TimeLimit.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerRecord.h" />
     <ClInclude Include="Title.h" />
-    <ClInclude Include="TitleText.h" />
     <ClInclude Include="TouchAbleObject.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Vector.h" />

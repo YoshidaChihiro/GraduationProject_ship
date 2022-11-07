@@ -1,29 +1,30 @@
-#include"Game.h"
-#include"FPS.h"
-#include"OBJLoader.h"
-#include"Audio.h"
-#include"ParticleEmitter.h"
-#include"DebugText.h"
-#include"FbxLoader.h"
-#include"Object3D.h"
-#include"Create3DObject.h"
-#include"Texture.h"
-#include"Scene.h"
-#include"Title.h"
-#include"Play.h"
-#include"Alpha.h"
-#include"Ending.h"
-#include"PipelineState.h"
-#include"FBXManager.h"
-#include"DrawMode.h"
+#include "Game.h"
+#include "FPS.h"
+#include "OBJLoader.h"
+#include "Audio.h"
+#include "ParticleEmitter.h"
+#include "DebugText.h"
+#include "FbxLoader.h"
+#include "Object3D.h"
+#include "Create3DObject.h"
+#include "Texture.h"
+#include "Scene.h"
+#include "Title.h"
+#include "ModeSelect.h"
+#include "Play.h"
+#include "Alpha.h"
+#include "Ending.h"
+#include "PipelineState.h"
+#include "FBXManager.h"
+#include "DrawMode.h"
 #include "ComputeShade.h"
 #include "ComputeWrapper.h"
 #include "GameSettingParam.h"
 #include "LevelEditor.h"
-#include"window.h"
-#include"DirectXLib.h"
+#include "window.h"
+#include "DirectXLib.h"
 #include "LightCamera.h"
-#include"SceneManager.h"
+#include "SceneManager.h"
 #include "Sprite.h"
 #include "TextureResource.h"
 
@@ -83,24 +84,44 @@ void Game::RoadAsset()
 		Texture::LoadTexture("number", "number.png");
 		Texture::LoadTexture("wind", "wind.png");
 
-		break; 
+		//title
+		Texture::LoadTexture("title_logo", "title/title_logo.png");
+		Texture::LoadTexture("title_start", "title/title_start.png");
+
+		//modeselect
+		Texture::LoadTexture("gamemode_normal", "modeselect/gamemode_normal.png");
+		Texture::LoadTexture("gamemode_time", "modeselect/gamemode_timeattack.png");
+		Texture::LoadTexture("gamemode_obstacle", "modeselect/gamemode_obstacle.png");
+		Texture::LoadTexture("gamemode_collect", "modeselect/gamemode_collect.png");
+
+		//timer
+		Texture::LoadTexture("timer_base", "ui_ingame/timer_base.png");
+		Texture::LoadTexture("number_default", "number.png");
+		Texture::LoadTexture("number_comma", "comma.png");
+
+		//ranking
+		Texture::LoadTexture("rank_base", "ui_ingame/rank_base.png");
+		//speedmeter
+		Texture::LoadTexture("speed_base", "ui_ingame/speed_base.png");
+
+
+		break;
 	case 2:
 		//Objモデルの読み込み
 		OBJLoader::LoadModelFile("box", "box.obj", false);
 		OBJLoader::LoadModelFile("sphere", "sphere.obj", true);
 		OBJLoader::LoadModelFile("obBox", "bottomOriginBox.obj", false);
-		OBJLoader::LoadModelFile("plate", "plate.obj", false);		
+		OBJLoader::LoadModelFile("plate", "plate.obj", false);
+
+		OBJLoader::LoadModelFile("ship", "ship_demo.obj", false);
 		break;
 	case 3:
-		//Objモデルの読み込み
+		//WAVファイルの読み込み
+		//Audio::LoadFile("BGM_Title", "BGM/Title_BGM.wav");
 		break;
 	case 4:
 		//FBXファイルの読み込み
-		FBXManager::LoadModelFile("player", "Box", false);
-
-		//WAVファイルの読み込み
-		//Audio::LoadFile("BGM_Title", "BGM/Title_BGM.wav");
-
+		FBXManager::LoadModelFile("box", "Box", false);
 		break;
 	case 5:
 		//FBXアニメーションの登録
@@ -190,6 +211,7 @@ void Game::LoadFinish()
 	sceneManeger = SceneManager::GetInstance();
 	sceneManeger->Initialize();
 	sceneManeger->Add(Scene::SCENE::Title, new Title());
+	sceneManeger->Add(Scene::SCENE::ModeSelect, new ModeSelect());
 	sceneManeger->Add(Scene::SCENE::Play, new Play());
 	sceneManeger->Add(Scene::SCENE::Ending, new Ending());
 
