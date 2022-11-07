@@ -139,14 +139,6 @@ void Play::Initialize()
 void Play::Update()
 {
 #ifdef _DEBUG
-	////シーン切り替え
-	//if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
-	//{
-	//	Audio::AllStopSE();
-	//	ShutDown();
-	//	return;
-	//}
-
 	//初期化
 	if (Input::TriggerKey(DIK_R))
 	{
@@ -177,13 +169,21 @@ void Play::Update()
 
 	//////////////////////////////
 	//arudino->ReceiveData();
+	//const float default_range = 2000.0f;//無風時の値(!!要調整!!)
+	//const int data_R = default_range - arudino->GetData(0);
+	//const int data_L = default_range - arudino->GetData(1);
 
-	//風の強さ
-	//float power = (arudino->GetData(0) + arudino->GetData(1)) / 2.0f;
+	////風の強さ
+	//float power = (data_R + data_L) / 2;//2つの値の平均
+	//power /= default_range;//0～1に
 	//player->SetPower(power);
 
-	//風の向き 2つの差をみて小さい方の向きにする
-	//player->SetAngle(90.0f);
+	//風の向き
+	//int angle = data_L - data_R;//2つの値の差
+	//angle /= default_range;//-1～0～1に
+	//angle *= 90;//0～180に
+	//angle += 90;
+	//player->SetAngle(angle);
 	//////////////////////////////
 
 	//プレイヤーの接地判定
