@@ -10,6 +10,7 @@
 #include "RankingInGame.h"
 #include "SpeedMeter.h"
 #include "ResultInGame.h"
+#include "GoalCounter.h"
 #include "Player.h"
 #include "CourseSquare.h"
 #include "CourseObstacle.h"
@@ -47,6 +48,8 @@ Play::Play()
 
 	resultView = new ResultInGame();
 
+	goalCounter = new GoalCounter();
+
 	//////////////////////////////
 	//arudino = new Arudino();
 	//arudino->Initialize();
@@ -61,6 +64,7 @@ Play::~Play()
 	PtrDelete(rank);
 	PtrDelete(speedMeter);
 	PtrDelete(resultView);
+	PtrDelete(goalCounter);
 
 	//////////////////////////////
 	//arudino->End();
@@ -92,6 +96,9 @@ void Play::Initialize()
 	speedMeter->Initialize();
 
 	resultView->Initialize();
+
+	goalCounter->Initialize(1);//‰½Žü‚ÅƒS[ƒ‹‚·‚é‚©
+	hitGoal_prev = false;
 
 	playerForwordVec_stock = {};
 
@@ -149,12 +156,18 @@ void Play::Update()
 #endif
 
 	//ƒS[ƒ‹
-	if (PlayerHitGoal())
+	const bool hitGoal = PlayerHitGoal();
+	if (hitGoal && !hitGoal_prev)
+	{
+		goalCounter->Add();
+	}
+	if (goalCounter->GetEnd())
 	{
 		timer->Goal();
 		resultView->SetIsActive(true);
 		player->SetIsCanInput(false);
 	}
+	hitGoal_prev = hitGoal;
 
 	//‘€ì‰Â”\ó‘Ô‚Ö
 	if (timer->GetIsAction())

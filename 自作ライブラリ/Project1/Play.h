@@ -14,6 +14,7 @@ class TimerRecord;
 class RankingInGame;
 class SpeedMeter;
 class ResultInGame;
+class GoalCounter;
 
 class Play :public Scene
 {
@@ -49,6 +50,10 @@ private:
 
 	//リザルト表示
 	ResultInGame* resultView = nullptr;
+
+	//周回計測
+	GoalCounter* goalCounter = nullptr;
+	bool hitGoal_prev = false;
 
 	//プレイヤー
 	Player* player = nullptr;
