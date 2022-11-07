@@ -9,6 +9,8 @@
 #include "TimerRecord.h"
 #include "RankingInGame.h"
 #include "SpeedMeter.h"
+#include "ResultInGame.h"
+#include "GoalCounter.h"
 #include "Player.h"
 #include "CourseSquare.h"
 #include "CourseObstacle.h"
@@ -44,9 +46,13 @@ Play::Play()
 
 	speedMeter = new SpeedMeter();
 
+	resultView = new ResultInGame();
+
+	goalCounter = new GoalCounter();
+
 	//////////////////////////////
-	arudino = new Arudino();
-	arudino->Initialize();
+	//arudino = new Arudino();
+	//arudino->Initialize();
 	//////////////////////////////
 }
 
@@ -57,10 +63,12 @@ Play::~Play()
 	PtrDelete(timer);
 	PtrDelete(rank);
 	PtrDelete(speedMeter);
+	PtrDelete(resultView);
+	PtrDelete(goalCounter);
 
 	//////////////////////////////
-	arudino->End();
-	PtrDelete(arudino);
+	//arudino->End();
+	//PtrDelete(arudino);
 	//////////////////////////////
 }
 
@@ -87,11 +95,23 @@ void Play::Initialize()
 
 	speedMeter->Initialize();
 
+	resultView->Initialize();
+
+	goalCounter->Initialize(1);//何周でゴールするか
+	hitGoal_prev = false;
+
 	playerForwordVec_stock = {};
 
 	objectManager->Reset();
 
-	player = new Player(Vector3(-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2));
+	//RR_スタート地点
+	Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2};
+	//RR_ゴール前
+	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -6 * CourseBuilder::onesize};
+	//test_中央
+	//Vector3 playerPosition = { 0, 10, 0 };
+
+	player = new Player(playerPosition);
 	objectManager->Add(player);
 
 	//コース壁
@@ -119,14 +139,6 @@ void Play::Initialize()
 void Play::Update()
 {
 #ifdef _DEBUG
-	//シーン切り替え
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
-	{
-		Audio::AllStopSE();
-		ShutDown();
-		return;
-	}
-
 	//初期化
 	if (Input::TriggerKey(DIK_R))
 	{
@@ -136,11 +148,18 @@ void Play::Update()
 #endif
 
 	//ゴール
-	if (PlayerHitGoal())
+	const bool hitGoal = PlayerHitGoal();
+	if (hitGoal && !hitGoal_prev)
+	{
+		goalCounter->Add();
+	}
+	if (goalCounter->GetEnd())
 	{
 		timer->Goal();
+		resultView->SetIsActive(true);
 		player->SetIsCanInput(false);
 	}
+	hitGoal_prev = hitGoal;
 
 	//操作可能状態へ
 	if (timer->GetIsAction())
@@ -149,14 +168,22 @@ void Play::Update()
 	}
 
 	//////////////////////////////
-	arudino->ReceiveData();
+	//arudino->ReceiveData();
+	//const float default_range = 2000.0f;//無風時の値(!!要調整!!)
+	//const int data_R = default_range - arudino->GetData(0);
+	//const int data_L = default_range - arudino->GetData(1);
 
-	//風の強さ
-	//float power = (arudino->GetData(0) + arudino->GetData(1)) / 2.0f;
+	////風の強さ
+	//float power = (data_R + data_L) / 2;//2つの値の平均
+	//power /= default_range;//0～1に
 	//player->SetPower(power);
 
 	//風の向き
-	//player->SetAngle(90.0f);
+	//int angle = data_L - data_R;//2つの値の差
+	//angle /= default_range;//-1～0～1に
+	//angle *= 90;//0～180に
+	//angle += 90;
+	//player->SetAngle(angle);
 	//////////////////////////////
 
 	//プレイヤーの接地判定
@@ -185,6 +212,30 @@ void Play::Update()
 	//速度
 	speedMeter->Update(player->GetPower() * 100);
 
+	//リザルト表示
+	resultView->Update();
+	if (resultView->GetIsMode())
+	{
+		next = ModeSelect;
+		Audio::AllStopSE();
+		ShutDown();
+		return;
+	}
+	else if (resultView->GetIsRetry())
+	{
+		Initialize();
+		Audio::AllStopSE();
+		return;
+	}
+	else if (resultView->GetIsTitle())
+	{
+		next = Title;
+		Audio::AllStopSE();
+		ShutDown();
+		return;
+	}
+
+
 	//カメラ
 	if (!player->GetIsHitObstacle())
 	{
@@ -206,7 +257,6 @@ void Play::Update()
 
 void Play::PreDraw()
 {
-	timer->Draw();
 	rank->Draw();
 	speedMeter->Draw();
 
@@ -223,6 +273,9 @@ void Play::PostDraw()
 	{
 		DirectXLib::GetInstance()->DepthClear();
 	}
+
+	timer->Draw();
+	resultView->PostDraw();
 }
 
 bool Play::PlayerOnGround()

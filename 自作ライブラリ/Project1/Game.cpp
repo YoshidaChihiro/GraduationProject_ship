@@ -101,8 +101,16 @@ void Game::RoadAsset()
 
 		//ranking
 		Texture::LoadTexture("rank_base", "ui_ingame/rank_base.png");
+
 		//speedmeter
 		Texture::LoadTexture("speed_base", "ui_ingame/speed_base.png");
+
+		//result
+		Texture::LoadTexture("result_goal", "result/goal.png");
+		Texture::LoadTexture("result_frame", "result/frame.png");
+		Texture::LoadTexture("result_mode", "result/mode.png");
+		Texture::LoadTexture("result_retry", "result/retry.png");
+		Texture::LoadTexture("result_title", "result/title.png");
 
 
 		break;

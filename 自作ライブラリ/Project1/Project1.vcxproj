@@ -198,6 +198,7 @@
     <ClCompile Include="Create3DObject.cpp" />
     <ClCompile Include="CreateFigure.cpp" />
     <ClCompile Include="ComputeShade.cpp" />
+    <ClCompile Include="GoalCounter.cpp" />
     <ClCompile Include="GoalSquare.cpp" />
     <ClCompile Include="Grass.cpp" />
     <ClCompile Include="GSShaderTestObj.cpp" />
@@ -294,6 +295,7 @@
     <ClInclude Include="CreateFigure.h" />
     <ClInclude Include="ComputeShade.h" />
     <ClInclude Include="GameSettingParam.h" />
+    <ClInclude Include="GoalCounter.h" />
     <ClInclude Include="GoalSquare.h" />
     <ClInclude Include="Grass.h" />
     <ClInclude Include="GSShaderTestObj.h" />

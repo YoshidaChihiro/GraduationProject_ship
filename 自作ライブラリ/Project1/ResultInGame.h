@@ -9,7 +9,7 @@ public:
 
 	void Initialize();
 	void Update();
-	void Draw();
+	void PostDraw();
 
 	void SetIsActive(const bool arg_isActive);
 	bool GetIsMode();
@@ -21,6 +21,9 @@ private:
 
 	Sprite* base = nullptr;
 	float alpha_base = 0.0f;
+	bool isAlphaEnd_base = false;
+
+	Sprite* goal = nullptr;
 
 	int select = 0;
 
@@ -31,9 +34,9 @@ private:
 	Sprite* select_retry = nullptr;
 	Sprite* select_title = nullptr;
 
-	const XMFLOAT2 position_mode = {100,900};
-	const XMFLOAT2 position_retry = {200,900};
-	const XMFLOAT2 position_title = {300,900};
+	const XMFLOAT2 position_mode = { 480, 900 };
+	const XMFLOAT2 position_retry = { 480 * 2, 900 };
+	const XMFLOAT2 position_title = { 480 * 3, 900 };
 
 	bool isMode = false;
 	bool isRetry = false;
