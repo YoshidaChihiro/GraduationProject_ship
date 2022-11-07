@@ -9,6 +9,7 @@
 #include "TimerRecord.h"
 #include "RankingInGame.h"
 #include "SpeedMeter.h"
+#include "ResultInGame.h"
 #include "Player.h"
 #include "CourseSquare.h"
 #include "CourseObstacle.h"
@@ -44,9 +45,11 @@ Play::Play()
 
 	speedMeter = new SpeedMeter();
 
+	resultView = new ResultInGame();
+
 	//////////////////////////////
-	arudino = new Arudino();
-	arudino->Initialize();
+	//arudino = new Arudino();
+	//arudino->Initialize();
 	//////////////////////////////
 }
 
@@ -57,10 +60,11 @@ Play::~Play()
 	PtrDelete(timer);
 	PtrDelete(rank);
 	PtrDelete(speedMeter);
+	PtrDelete(resultView);
 
 	//////////////////////////////
-	arudino->End();
-	PtrDelete(arudino);
+	//arudino->End();
+	//PtrDelete(arudino);
 	//////////////////////////////
 }
 
@@ -87,11 +91,20 @@ void Play::Initialize()
 
 	speedMeter->Initialize();
 
+	resultView->Initialize();
+
 	playerForwordVec_stock = {};
 
 	objectManager->Reset();
 
-	player = new Player(Vector3(-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2));
+	//RR_スタート地点
+	Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2};
+	//RR_ゴール前
+	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -6 * CourseBuilder::onesize};
+	//test_中央
+	//Vector3 playerPosition = { 0, 10, 0 };
+
+	player = new Player(playerPosition);
 	objectManager->Add(player);
 
 	//コース壁
@@ -119,13 +132,13 @@ void Play::Initialize()
 void Play::Update()
 {
 #ifdef _DEBUG
-	//シーン切り替え
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
-	{
-		Audio::AllStopSE();
-		ShutDown();
-		return;
-	}
+	////シーン切り替え
+	//if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
+	//{
+	//	Audio::AllStopSE();
+	//	ShutDown();
+	//	return;
+	//}
 
 	//初期化
 	if (Input::TriggerKey(DIK_R))
@@ -139,6 +152,7 @@ void Play::Update()
 	if (PlayerHitGoal())
 	{
 		timer->Goal();
+		resultView->SetIsActive(true);
 		player->SetIsCanInput(false);
 	}
 
@@ -149,13 +163,13 @@ void Play::Update()
 	}
 
 	//////////////////////////////
-	arudino->ReceiveData();
+	//arudino->ReceiveData();
 
 	//風の強さ
 	//float power = (arudino->GetData(0) + arudino->GetData(1)) / 2.0f;
 	//player->SetPower(power);
 
-	//風の向き
+	//風の向き 2つの差をみて小さい方の向きにする
 	//player->SetAngle(90.0f);
 	//////////////////////////////
 
@@ -185,6 +199,30 @@ void Play::Update()
 	//速度
 	speedMeter->Update(player->GetPower() * 100);
 
+	//リザルト表示
+	resultView->Update();
+	if (resultView->GetIsMode())
+	{
+		next = ModeSelect;
+		Audio::AllStopSE();
+		ShutDown();
+		return;
+	}
+	else if (resultView->GetIsRetry())
+	{
+		Initialize();
+		Audio::AllStopSE();
+		return;
+	}
+	else if (resultView->GetIsTitle())
+	{
+		next = Title;
+		Audio::AllStopSE();
+		ShutDown();
+		return;
+	}
+
+
 	//カメラ
 	if (!player->GetIsHitObstacle())
 	{
@@ -206,7 +244,6 @@ void Play::Update()
 
 void Play::PreDraw()
 {
-	timer->Draw();
 	rank->Draw();
 	speedMeter->Draw();
 
@@ -223,6 +260,9 @@ void Play::PostDraw()
 	{
 		DirectXLib::GetInstance()->DepthClear();
 	}
+
+	timer->Draw();
+	resultView->PostDraw();
 }
 
 bool Play::PlayerOnGround()

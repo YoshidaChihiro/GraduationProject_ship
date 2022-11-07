@@ -5,6 +5,7 @@
 ResultInGame::ResultInGame()
 {
 	base = new Sprite();
+	goal = new Sprite();
 	frame = new Sprite();
 	select_mode = new Sprite();
 	select_retry = new Sprite();
@@ -14,6 +15,7 @@ ResultInGame::ResultInGame()
 ResultInGame::~ResultInGame()
 {
 	PtrDelete(base);
+	PtrDelete(goal);
 	PtrDelete(frame);
 	PtrDelete(select_mode);
 	PtrDelete(select_retry);
@@ -24,6 +26,7 @@ void ResultInGame::Initialize()
 {
 	isActive = false;
 	alpha_base = 0.0f;
+	isAlphaEnd_base = false;
 	select = 0;
 	position_frame = position_mode;
 	isMode = false;
@@ -45,15 +48,24 @@ void ResultInGame::Update()
 		const float speed_alpha = 0.01f;
 		alpha_base += speed_alpha;
 	}
+	else
+	{
+		isAlphaEnd_base = true;
+	}
+
+	if (!isAlphaEnd_base)
+	{
+		return;
+	}
 
 	//‘I‘ð•ÏX
-	if (Input::DownKey(DIK_RIGHT) && select > 0)
-	{
-		select--;
-	}
-	if (Input::DownKey(DIK_LEFT) && select < 2)
+	if (Input::TriggerKey(DIK_RIGHT) && select < 2)
 	{
 		select++;
+	}
+	if (Input::TriggerKey(DIK_LEFT) && select > 0)
+	{
+		select--;
 	}
 	switch (select)
 	{
@@ -91,7 +103,7 @@ void ResultInGame::Update()
 	}
 }
 
-void ResultInGame::Draw()
+void ResultInGame::PostDraw()
 {
 	if (!isActive)
 	{
@@ -100,14 +112,19 @@ void ResultInGame::Draw()
 
 	PipelineState::SetPipeline("Sprite");
 
+	if (isAlphaEnd_base)
+	{
+		select_mode->DrawSprite("result_mode", position_mode);
+		select_retry->DrawSprite("result_retry", position_retry);
+		select_title->DrawSprite("result_title", position_title);
+
+		frame->DrawSprite("result_frame", position_frame);
+	}
+
 	const XMFLOAT2 screenSize = { 1920,1080 };
-	base->DrawSprite("white1x1", { screenSize.x / 2,screenSize.y / 2}, 0.0f, screenSize, {0.0f,0.0f,0.0f,alpha_base }, {0.5f,0.5f}, "NoAlphaToCoverageSprite");
 
-	frame->DrawSprite("", position_frame);
-
-	select_mode->DrawSprite("", position_mode);
-	select_retry->DrawSprite("", position_retry);
-	select_title->DrawSprite("", position_title);
+	goal->DrawSprite("result_goal", { screenSize.x / 2,300 });
+	base->DrawSprite("white1x1", { screenSize.x / 2,screenSize.y / 2 }, 0.0f, screenSize, { 0.0f,0.0f,0.0f,alpha_base }, { 0.5f,0.5f }, "NoAlphaToCoverageSprite");
 }
 
 void ResultInGame::SetIsActive(const bool arg_isActive)

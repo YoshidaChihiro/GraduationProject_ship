@@ -1,5 +1,6 @@
 #include "TimerRecord.h"
 #include "PtrDelete.h"
+#include "Easing.h"
 
 TimerRecord::TimerRecord()
 {
@@ -37,11 +38,16 @@ void TimerRecord::Initialize()
 	seconds = 0.0f;
 	minutes = 0.0f;
 	decimal = 0.0f;
+	position_base = { 960, 64 };
 	isCountDown = false;
+	isResult = false;
+	count_movePos = 0;
 }
 
 void TimerRecord::Update()
 {
+	SettingPosition();
+
 	//通常
 	if (isAction)
 	{
@@ -49,7 +55,7 @@ void TimerRecord::Update()
 		const int time_origin = timer->GetRealTime(TimerPerformance::Up);
 		seconds = time_origin % 60;
 		minutes = time_origin / 60;
-		decimal = 0;/////////////
+		decimal = 0;//小数以下の処理不明
 	}
 	//カウントダウン
 	else if (isCountDown)
@@ -64,6 +70,16 @@ void TimerRecord::Update()
 			timer->Initialize();
 			timer->SetLimit(limit_default);
 		}
+	}
+	//リザルト表示
+	else if (isResult)
+	{
+		const int limit_movePos = 40;
+		if (count_movePos < limit_movePos)
+		{
+			count_movePos++;
+		}
+		position_base.y = Easing::EaseOutCirc(64, 580, limit_movePos, count_movePos);
 	}
 }
 
@@ -85,23 +101,58 @@ void TimerRecord::Draw()
 	{
 		sprite_comma[i]->DrawSprite("number_comma", position_comma[i]);
 	}
-	sprite_base->DrawSprite("timer_base",position_inGame);
+	sprite_base->DrawSprite("timer_base", position_base);
 }
 
 void TimerRecord::Start()
 {
 	isCountDown = true;
 	isAction = false;
+	isResult = false;
 	timer->Initialize();
 	timer->SetLimit(limit_countDown);
 }
 
 void TimerRecord::Goal()
 {
+	isCountDown = false;
 	isAction = false;
+	isResult = true;
 }
 
 bool TimerRecord::GetIsAction()
 {
 	return isAction;
+}
+
+void TimerRecord::SettingPosition()
+{
+	const XMFLOAT2 position_center = { 1920 / 2, 1080 / 2 };
+	const float size_numberX = 47;
+
+	//カウントダウン
+	position_countDown = position_center;
+
+	//ベース
+	//position_base = { position_center.x, 64 };
+
+	//秒
+	position_seconds = position_base;
+
+	//分
+	position_minutes = {
+		position_base.x - (size_numberX * 3),
+		position_base.y
+	};
+
+	//小数
+	position_decimal = {
+		position_base.x + (size_numberX * 3),
+		position_base.y
+	};
+
+	//
+	position_comma[0] = { position_base.x - (size_numberX * 1.5f), position_base.y };
+	position_comma[1] = { position_base.x + (size_numberX * 1.5f), position_base.y };
+
 }
