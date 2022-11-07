@@ -363,6 +363,9 @@
     <ClCompile Include="SpeedMeter.cpp">
       <Filter>ソース ファイル\GameText</Filter>
     </ClCompile>
+    <ClCompile Include="ResultInGame.cpp">
+      <Filter>ソース ファイル\GameText</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Create3DObject.h">
@@ -651,6 +654,9 @@
       <Filter>ヘッダー ファイル\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="SpeedMeter.h">
+      <Filter>ヘッダー ファイル\GameText</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultInGame.h">
       <Filter>ヘッダー ファイル\GameText</Filter>
     </ClInclude>
   </ItemGroup>

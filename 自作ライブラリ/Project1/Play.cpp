@@ -45,8 +45,8 @@ Play::Play()
 	speedMeter = new SpeedMeter();
 
 	//////////////////////////////
-	//arudino = new Arudino();
-	//arudino->Initialize();
+	arudino = new Arudino();
+	arudino->Initialize();
 	//////////////////////////////
 }
 
@@ -59,8 +59,8 @@ Play::~Play()
 	PtrDelete(speedMeter);
 
 	//////////////////////////////
-	//arudino->End();
-	//PtrDelete(arudino);
+	arudino->End();
+	PtrDelete(arudino);
 	//////////////////////////////
 }
 
@@ -149,7 +149,7 @@ void Play::Update()
 	}
 
 	//////////////////////////////
-	//arudino->ReceiveData();
+	arudino->ReceiveData();
 
 	//•—‚Ì‹­‚³
 	//float power = (arudino->GetData(0) + arudino->GetData(1)) / 2.0f;

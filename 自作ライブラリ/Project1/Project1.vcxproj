@@ -233,6 +233,7 @@
     <ClCompile Include="Bloom.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="RankingInGame.cpp" />
+    <ClCompile Include="ResultInGame.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScreenCamera.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
@@ -334,6 +335,7 @@
     <ClInclude Include="QueryCallback.h" />
     <ClInclude Include="RankingInGame.h" />
     <ClInclude Include="RaycastHit.h" />
+    <ClInclude Include="ResultInGame.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScreenCamera.h" />
