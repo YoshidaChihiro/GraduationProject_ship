@@ -66,9 +66,13 @@ private:
 	//áŠQ•¨Õ“Ë”»’è
 	bool isHitObstacle = false;
 	int count_hitObstacle = 0;
+	int count_hitObstacle_rotZ = 0;
 	Vector3 pos_backStep = {};
 	Vector3 pos_hitStart = {};
 	float rotation_hitStart_y = 0.0f;
+	float rotation_hitStart_z = 0.0f;
+	int rotEnd_Z = 0;
+	int count_hitObstacle_rotEndZ = 0;
 
 	//“ü—Íó•t
 	bool isCanInput = false;
