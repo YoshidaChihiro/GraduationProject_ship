@@ -8,6 +8,9 @@
 #include "Input.h"
 #include "TimerRecord.h"
 #include "RankingInGame.h"
+#include "SpeedMeter.h"
+#include "ResultInGame.h"
+#include "GoalCounter.h"
 #include "Player.h"
 #include "CourseSquare.h"
 #include "CourseObstacle.h"
@@ -41,8 +44,16 @@ Play::Play()
 
 	rank = new RankingInGame();
 
+	speedMeter = new SpeedMeter();
+
+	resultView = new ResultInGame();
+
+	goalCounter = new GoalCounter();
+
+	//////////////////////////////
 	//arudino = new Arudino();
 	//arudino->Initialize();
+	//////////////////////////////
 }
 
 
@@ -51,8 +62,14 @@ Play::~Play()
 	ParticleManager::GetInstance()->ClearDeadEffect();
 	PtrDelete(timer);
 	PtrDelete(rank);
+	PtrDelete(speedMeter);
+	PtrDelete(resultView);
+	PtrDelete(goalCounter);
+
+	//////////////////////////////
 	//arudino->End();
 	//PtrDelete(arudino);
+	//////////////////////////////
 }
 
 void Play::Initialize()
@@ -76,15 +93,29 @@ void Play::Initialize()
 
 	rank->Initialize();
 
+	speedMeter->Initialize();
+
+	resultView->Initialize();
+
+	goalCounter->Initialize(1);//何周でゴールするか
+	hitGoal_prev = false;
+
 	playerForwordVec_stock = {};
 
 	objectManager->Reset();
 
-	player = new Player(Vector3(-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2));
+	//RR_スタート地点
+	Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2};
+	//RR_ゴール前
+	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -6 * CourseBuilder::onesize};
+	//test_中央
+	//Vector3 playerPosition = { 0, 10, 0 };
+
+	player = new Player(playerPosition);
 	objectManager->Add(player);
 
 	//コース壁
-	courses_wall = CourseBuilder::BuildCourse_RR();
+	courses_wall = CourseBuilder::BuildCourse_CSV("RR.csv");
 
 	//地面
 	CourseSquare* course_straight = new CourseSquare(Vector3(0, 0, 0), Vector3(24 * CourseBuilder::onesize, 1, 24 * CourseBuilder::onesize));
@@ -108,14 +139,6 @@ void Play::Initialize()
 void Play::Update()
 {
 #ifdef _DEBUG
-	//シーン切り替え
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
-	{
-		Audio::AllStopSE();
-		ShutDown();
-		return;
-	}
-
 	//初期化
 	if (Input::TriggerKey(DIK_R))
 	{
@@ -125,11 +148,18 @@ void Play::Update()
 #endif
 
 	//ゴール
-	if (PlayerHitGoal())
+	const bool hitGoal = PlayerHitGoal();
+	if (hitGoal && !hitGoal_prev)
+	{
+		goalCounter->Add();
+	}
+	if (goalCounter->GetEnd())
 	{
 		timer->Goal();
+		resultView->SetIsActive(true);
 		player->SetIsCanInput(false);
 	}
+	hitGoal_prev = hitGoal;
 
 	//操作可能状態へ
 	if (timer->GetIsAction())
@@ -137,15 +167,24 @@ void Play::Update()
 		player->SetIsCanInput(true);
 	}
 
-	////////////////////////////////////
-	//float power = arudino->ReceiveData();
-	//power /= 710.0f;//スライドボリュームの最大値が710
+	//////////////////////////////
+	//arudino->ReceiveData();
+	//const float default_range = 2000.0f;//無風時の値(!!要調整!!)
+	//const int data_R = default_range - arudino->GetData(0);
+	//const int data_L = default_range - arudino->GetData(1);
+
 	////風の強さ
+	//float power = (data_R + data_L) / 2;//2つの値の平均
+	//power /= default_range;//0～1に
 	//player->SetPower(power);
 
-	////風の向き
-	//player->SetAngle(90.0f);
-	////////////////////////////////////
+	//風の向き
+	//int angle = data_L - data_R;//2つの値の差
+	//angle /= default_range;//-1～0～1に
+	//angle *= 90;//0～180に
+	//angle += 90;
+	//player->SetAngle(angle);
+	//////////////////////////////
 
 	//プレイヤーの接地判定
 	bool onGround = PlayerOnGround();
@@ -170,6 +209,33 @@ void Play::Update()
 	//ランキング
 	rank->Update(1);
 
+	//速度
+	speedMeter->Update(player->GetPower() * 100);
+
+	//リザルト表示
+	resultView->Update();
+	if (resultView->GetIsMode())
+	{
+		next = ModeSelect;
+		Audio::AllStopSE();
+		ShutDown();
+		return;
+	}
+	else if (resultView->GetIsRetry())
+	{
+		Initialize();
+		Audio::AllStopSE();
+		return;
+	}
+	else if (resultView->GetIsTitle())
+	{
+		next = Title;
+		Audio::AllStopSE();
+		ShutDown();
+		return;
+	}
+
+
 	//カメラ
 	if (!player->GetIsHitObstacle())
 	{
@@ -191,8 +257,8 @@ void Play::Update()
 
 void Play::PreDraw()
 {
-	timer->Draw();
 	rank->Draw();
+	speedMeter->Draw();
 
 	objectManager->DrawReady();
 
@@ -207,6 +273,9 @@ void Play::PostDraw()
 	{
 		DirectXLib::GetInstance()->DepthClear();
 	}
+
+	timer->Draw();
+	resultView->PostDraw();
 }
 
 bool Play::PlayerOnGround()
@@ -274,8 +343,8 @@ bool Play::CourseOut()
 
 		courseOut = courseOut ||
 			(aXR > bXL && aXL < bXR &&
-			aYU > bYD && aYD < bYU &&
-			aZF < bZB && aZB > bZF);
+				aYU > bYD && aYD < bYU &&
+				aZF < bZB && aZB > bZF);
 	}
 
 	return courseOut;
@@ -304,9 +373,9 @@ bool Play::PlayerHitGoal()
 	float bZF = poition_course.z - (scale_course.z / 2.0f);//Bの前
 	float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
 
-	bool hitGoal = aXR > bXL && aXL < bXR&&
-		aYU > bYD && aYD < bYU&&
-		aZF < bZB&& aZB > bZF;
+	bool hitGoal = aXR > bXL && aXL < bXR &&
+		aYU > bYD && aYD < bYU &&
+		aZF < bZB && aZB > bZF;
 
 	return hitGoal;
 }
@@ -339,9 +408,9 @@ bool Play::PlayerHitObstacle()
 		float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
 
 		hitObstacle = hitObstacle ||
-			(aXR > bXL && aXL < bXR&&
-				aYU > bYD && aYD < bYU&&
-				aZF < bZB&& aZB > bZF);
+			(aXR > bXL && aXL < bXR &&
+				aYU > bYD && aYD < bYU &&
+				aZF < bZB && aZB > bZF);
 	}
 
 	return hitObstacle;

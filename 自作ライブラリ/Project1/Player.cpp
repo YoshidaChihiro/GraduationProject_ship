@@ -37,9 +37,13 @@ void Player::Initialize()
 
 	isHitObstacle = false;
 	count_hitObstacle = 0;
+	count_hitObstacle_rotZ = 0;
 	pos_backStep = {};
 	pos_hitStart = {};
 	rotation_hitStart_y = 0.0f;
+	rotation_hitStart_z = 0.0f;
+	rotEnd_Z = 0;
+	count_hitObstacle_rotEndZ = 0;
 
 	isCanInput = false;
 
@@ -151,6 +155,9 @@ void Player::HitObstacle()
 	pos_backStep = position + -velocity * 10.0f;
 	pos_hitStart = position;
 	rotation_hitStart_y = rotation.y;
+	rotation_hitStart_z = rotation.z;
+	rotEnd_Z = 35;
+	count_hitObstacle_rotEndZ = 0;
 }
 
 bool Player::GetIsHitObstacle()
@@ -171,6 +178,11 @@ void Player::SetAngle(const float arg_angle_device)
 void Player::SetPower(const float arg_power_device)
 {
 	power_device = arg_power_device;
+}
+
+float Player::GetPower()
+{
+	return power;
 }
 
 void Player::MovePos_sail()
@@ -258,14 +270,28 @@ void Player::MovePos_Obstacle()
 		count_hitObstacle = 0;
 		isCanInput = true;
 		power = 0.0f;
+		rotation.y = rotation_hitStart_y;
+		rotation.z = 0.0f;
 		return;
 	}
-
+	const int rotNum_z = 5;//Z軸の揺れ回数
+	if (count_hitObstacle_rotZ > limit_obstacle / rotNum_z)
+	{
+		count_hitObstacle_rotZ = 0;
+		rotation_hitStart_z = rotation.z;
+		count_hitObstacle_rotEndZ++;
+		rotEnd_Z *= -1;
+		if (count_hitObstacle_rotEndZ == rotNum_z - 1)
+		{
+			rotEnd_Z = 0.0f;
+		}
+	}
 
 	isCanInput = false;
 
 	//スリップ
 	rotation.y = Easing::EaseOutCirc(rotation_hitStart_y, rotation_hitStart_y + 360.0f, limit_obstacle, count_hitObstacle);
+	rotation.z = Easing::EaseOutCirc(rotation_hitStart_z, rotEnd_Z, limit_obstacle / rotNum_z, count_hitObstacle_rotZ);
 
 	//バックステップ
 	position.x = Easing::EaseOutCirc(pos_hitStart.x, pos_backStep.x, limit_obstacle, count_hitObstacle);
@@ -273,4 +299,5 @@ void Player::MovePos_Obstacle()
 	position.z = Easing::EaseOutCirc(pos_hitStart.z, pos_backStep.z, limit_obstacle, count_hitObstacle);
 
 	count_hitObstacle++;
+	count_hitObstacle_rotZ++;
 }

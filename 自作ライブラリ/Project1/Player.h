@@ -33,6 +33,8 @@ public:
 	//デバイスから受け取った風の強さを代入
 	void SetPower(const float arg_power_device);
 
+	float GetPower();
+
 private:
 	//帆入力による移動
 	void MovePos_sail();
@@ -64,9 +66,13 @@ private:
 	//障害物衝突判定
 	bool isHitObstacle = false;
 	int count_hitObstacle = 0;
+	int count_hitObstacle_rotZ = 0;
 	Vector3 pos_backStep = {};
 	Vector3 pos_hitStart = {};
 	float rotation_hitStart_y = 0.0f;
+	float rotation_hitStart_z = 0.0f;
+	int rotEnd_Z = 0;
+	int count_hitObstacle_rotEndZ = 0;
 
 	//入力受付
 	bool isCanInput = false;

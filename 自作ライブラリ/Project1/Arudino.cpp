@@ -53,18 +53,23 @@ void Arudino::Initialize()
 
 }
 
-int Arudino::ReceiveData()
+void Arudino::ReceiveData()
 {
 	//éÛêMë“ã@
 	DWORD dwRead;
-	ready = ReadFile(Portarduino, &receiveData, sizeof(UINT8)*2, &dwRead, NULL);
+	ready = ReadFile(Portarduino, receiveData, sizeof(UINT8) * 4, &dwRead, NULL);
 	if (!ready) {
 		printf("NG5\n");
 	}
-	UINT16 data = receiveData[0] + UINT16(receiveData[1]<<8);
-	printf("%d\n", &data);
 
-	return data;
+	UINT16 data1 = (UINT16)(receiveData[0] << 8) | (UINT16)receiveData[1];
+	UINT16 data2 = (UINT16)(receiveData[2] << 8) | (UINT16)receiveData[3];
+	printf("data1 : %u\n", data1);
+	printf("data2 : %u\n", data2);
+	printf("\n");
+
+	datas[0] = data1;
+	datas[1] = data2;
 }
 
 void Arudino::SendData()
@@ -101,4 +106,9 @@ void Arudino::SendData()
 void Arudino::End()
 {
 	CloseHandle(Portarduino);
+}
+
+UINT16 Arudino::GetData(const int arg_arrayNum)
+{
+	return datas[arg_arrayNum];
 }

@@ -198,6 +198,7 @@
     <ClCompile Include="Create3DObject.cpp" />
     <ClCompile Include="CreateFigure.cpp" />
     <ClCompile Include="ComputeShade.cpp" />
+    <ClCompile Include="GoalCounter.cpp" />
     <ClCompile Include="GoalSquare.cpp" />
     <ClCompile Include="Grass.cpp" />
     <ClCompile Include="GSShaderTestObj.cpp" />
@@ -233,10 +234,12 @@
     <ClCompile Include="Bloom.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="RankingInGame.cpp" />
+    <ClCompile Include="ResultInGame.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScreenCamera.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SmartPtr.cpp" />
+    <ClCompile Include="SpeedMeter.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Sprite3D.cpp" />
@@ -245,7 +248,6 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerRecord.cpp" />
     <ClCompile Include="Title.cpp" />
-    <ClCompile Include="TitleText.cpp" />
     <ClCompile Include="TouchAbleObject.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="Vector.cpp" />
@@ -293,6 +295,7 @@
     <ClInclude Include="CreateFigure.h" />
     <ClInclude Include="ComputeShade.h" />
     <ClInclude Include="GameSettingParam.h" />
+    <ClInclude Include="GoalCounter.h" />
     <ClInclude Include="GoalSquare.h" />
     <ClInclude Include="Grass.h" />
     <ClInclude Include="GSShaderTestObj.h" />
@@ -334,11 +337,13 @@
     <ClInclude Include="QueryCallback.h" />
     <ClInclude Include="RankingInGame.h" />
     <ClInclude Include="RaycastHit.h" />
+    <ClInclude Include="ResultInGame.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScreenCamera.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SmartPtr.h" />
+    <ClInclude Include="SpeedMeter.h" />
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
@@ -348,7 +353,6 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerRecord.h" />
     <ClInclude Include="Title.h" />
-    <ClInclude Include="TitleText.h" />
     <ClInclude Include="TouchAbleObject.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Vector.h" />
