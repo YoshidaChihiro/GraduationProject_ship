@@ -1,7 +1,7 @@
-#include "CourseSquare.h"
+#include "Ground.h"
 #include "OBJLoader.h"
 
-CourseSquare::CourseSquare(const Vector3& arg_pos, const Vector3& arg_scale_hitBox)
+Ground::Ground(const Vector3& arg_pos, const Vector3& arg_scale)
 {
 	//アニメーション用にモデルのポインタを格納
 	myModel = OBJLoader::GetModel("box");
@@ -11,32 +11,33 @@ CourseSquare::CourseSquare(const Vector3& arg_pos, const Vector3& arg_scale_hitB
 	name = typeid(*this).name();
 
 	position = arg_pos;
-	hitBox.SetScale(arg_scale_hitBox);
+	scale = arg_scale;
 
 	Initialize();
 }
 
-CourseSquare::~CourseSquare()
+Ground::~Ground()
 {
 }
 
-void CourseSquare::Initialize()
+void Ground::Initialize()
 {
-	scale = Vector3(1, 1, 1) * hitBox.GetScale();
+	color = { 0.0f,0.5f,1.0f,1 };
 	hitBox.SetPosition(position);
+	hitBox.SetScale(scale);
 }
 
-void CourseSquare::Update()
+void Ground::Update()
 {
 	Object::Update();
 }
 
-void CourseSquare::Draw()
+void Ground::Draw()
 {
 	Object::CustomDraw(false, true);
 }
 
-void CourseSquare::DrawReady()
+void Ground::DrawReady()
 {
 	pipelineName = "BasicObj";
 }

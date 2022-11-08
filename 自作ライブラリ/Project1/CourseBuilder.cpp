@@ -17,11 +17,9 @@ std::vector<CourseSquare*> CourseBuilder::BuildCourse_CSV(const std::string& arg
 
 	for (int i = 0; i < positions.size(); i++)
 	{
-		const float scale_y = 10.0f;
-
 		CourseSquare* course = new CourseSquare(
 			positions[i],
-			{ onesize, scale_y, onesize });
+			{ onesize, onesize, onesize });
 		objectManager->Add(course);
 		courses_wall.push_back(course);
 	}

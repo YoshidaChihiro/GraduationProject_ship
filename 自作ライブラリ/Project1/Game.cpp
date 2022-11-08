@@ -121,7 +121,9 @@ void Game::RoadAsset()
 		OBJLoader::LoadModelFile("obBox", "bottomOriginBox.obj", false);
 		OBJLoader::LoadModelFile("plate", "plate.obj", false);
 
-		OBJLoader::LoadModelFile("ship", "ship_demo.obj", false);
+		OBJLoader::LoadModelFile("ship", "ship.obj", false);
+		OBJLoader::LoadModelFile("wall", "wall.obj", false);
+		OBJLoader::LoadModelFile("goal", "goal.obj", false);
 		break;
 	case 3:
 		//WAVÉtÉ@ÉCÉãÇÃì«Ç›çûÇ›

@@ -201,6 +201,7 @@
     <ClCompile Include="GoalCounter.cpp" />
     <ClCompile Include="GoalSquare.cpp" />
     <ClCompile Include="Grass.cpp" />
+    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="GSShaderTestObj.cpp" />
     <ClCompile Include="InGameCamera.cpp" />
     <ClCompile Include="LevelEditor.cpp" />
@@ -298,6 +299,7 @@
     <ClInclude Include="GoalCounter.h" />
     <ClInclude Include="GoalSquare.h" />
     <ClInclude Include="Grass.h" />
+    <ClInclude Include="Ground.h" />
     <ClInclude Include="GSShaderTestObj.h" />
     <ClInclude Include="InGameCamera.h" />
     <ClInclude Include="LevelEditor.h" />

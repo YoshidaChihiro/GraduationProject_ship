@@ -51,6 +51,9 @@ void Player::Initialize()
 	power_device = 0.0f;
 	angle = 90.0f;
 	power = 0.0f;
+
+	hitBox.SetPosition(position);
+	hitBox.SetScale(Vector3(1,0.7f,1.5f) * scale);
 }
 
 void Player::Update()
@@ -84,7 +87,7 @@ void Player::Update()
 		gravity = {};
 	}
 
-
+	hitBox.SetPosition(position);
 	Object::Update();
 
 	//‘O•û‚ÌƒxƒNƒgƒ‹‚ðŠi”[
@@ -152,7 +155,7 @@ void Player::SetIsCourseOut(const bool arg_isCourseOut)
 void Player::HitObstacle()
 {
 	isHitObstacle = true;
-	pos_backStep = position + -velocity * 10.0f;
+	pos_backStep = position + -velocity * 30.0f;
 	pos_hitStart = position;
 	rotation_hitStart_y = rotation.y;
 	rotation_hitStart_z = rotation.z;

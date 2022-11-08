@@ -8,6 +8,7 @@
 class Arudino;
 class Player;
 class CourseSquare;
+class Ground;
 class GoalSquare;
 class CourseObstacle;
 class TimerRecord;
@@ -60,7 +61,7 @@ private:
 	//コース壁
 	std::vector<CourseSquare*> courses_wall;
 	//コース地面
-	std::vector<CourseSquare*> courses_ground;
+	std::vector<Ground*> grounds;
 	//ゴール地点
 	GoalSquare* goal = nullptr;
 	//障害物

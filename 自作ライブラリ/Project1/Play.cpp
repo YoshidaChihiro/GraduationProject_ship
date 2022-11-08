@@ -13,6 +13,7 @@
 #include "GoalCounter.h"
 #include "Player.h"
 #include "CourseSquare.h"
+#include "Ground.h"
 #include "CourseObstacle.h"
 #include "CourseBuilder.h"
 #include "GoalSquare.h"
@@ -105,9 +106,9 @@ void Play::Initialize()
 	objectManager->Reset();
 
 	//RR_スタート地点
-	Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2};
+	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2};
 	//RR_ゴール前
-	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -6 * CourseBuilder::onesize};
+	Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -10 * CourseBuilder::onesize};
 	//test_中央
 	//Vector3 playerPosition = { 0, 10, 0 };
 
@@ -118,14 +119,14 @@ void Play::Initialize()
 	courses_wall = CourseBuilder::BuildCourse_CSV("RR.csv");
 
 	//地面
-	CourseSquare* course_straight = new CourseSquare(Vector3(0, 0, 0), Vector3(24 * CourseBuilder::onesize, 1, 24 * CourseBuilder::onesize));
-	objectManager->Add(course_straight);
-	courses_ground.push_back(course_straight);
+	Ground* ground = new Ground(Vector3(0, 0, 0), Vector3(24 * CourseBuilder::onesize, 1, 24 * CourseBuilder::onesize));
+	objectManager->Add(ground);
+	grounds.push_back(ground);
 
 	//ゴール地点
 	goal = new GoalSquare(
 		Vector3(-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 1, -3 * CourseBuilder::onesize),
-		Vector3(3 * CourseBuilder::onesize, 0.5f, CourseBuilder::onesize));
+		Vector3(3 * CourseBuilder::onesize, CourseBuilder::onesize, CourseBuilder::onesize));
 	objectManager->Add(goal);
 
 	//障害物
@@ -280,15 +281,15 @@ void Play::PostDraw()
 
 bool Play::PlayerOnGround()
 {
-	const Vector3 poition_player = player->GetPosition();
-	const Vector3 scale_player = player->GetScale();
+	const Vector3 poition_player = player->GetHitBox().GetPosition();
+	const Vector3 scale_player = player->GetHitBox().GetScale();
 
 	bool onGround = false;
 
-	for (int i = 0; i < courses_ground.size(); i++)
+	for (int i = 0; i < grounds.size(); i++)
 	{
-		const Vector3 poition_course = courses_ground[i]->GetPosition();
-		const Vector3 scale_course = courses_ground[i]->GetScale();
+		const Vector3 poition_ground = grounds[i]->GetHitBox().GetPosition();
+		const Vector3 scale_ground = grounds[i]->GetHitBox().GetScale();
 
 
 		float aXR = poition_player.x + (scale_player.x / 2.0f);//Aの右
@@ -298,12 +299,12 @@ bool Play::PlayerOnGround()
 		float aZF = poition_player.z - (scale_player.z / 2.0f);//Aの前
 		float aZB = poition_player.z + (scale_player.z / 2.0f);//Aの奥
 
-		float bXR = poition_course.x + (scale_course.x / 2.0f);//Bの右
-		float bXL = poition_course.x - (scale_course.x / 2.0f);//Bの左
-		float bYU = poition_course.y + (scale_course.y / 2.0f);//Bの上
-		float bYD = poition_course.y - (scale_course.y / 2.0f);//Bの下
-		float bZF = poition_course.z - (scale_course.z / 2.0f);//Bの前
-		float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
+		float bXR = poition_ground.x + (scale_ground.x / 2.0f);//Bの右
+		float bXL = poition_ground.x - (scale_ground.x / 2.0f);//Bの左
+		float bYU = poition_ground.y + (scale_ground.y / 2.0f);//Bの上
+		float bYD = poition_ground.y - (scale_ground.y / 2.0f);//Bの下
+		float bZF = poition_ground.z - (scale_ground.z / 2.0f);//Bの前
+		float bZB = poition_ground.z + (scale_ground.z / 2.0f);//Bの奥
 
 		onGround = onGround ||
 			(aXR > bXL && aXL < bXR &&
@@ -316,15 +317,15 @@ bool Play::PlayerOnGround()
 
 bool Play::CourseOut()
 {
-	const Vector3 poition_player = player->GetPosition();
-	const Vector3 scale_player = player->GetScale();
+	const Vector3 poition_player = player->GetHitBox().GetPosition();
+	const Vector3 scale_player = player->GetHitBox().GetScale();
 
 	bool courseOut = false;
 
 	for (int i = 0; i < courses_wall.size(); i++)
 	{
-		const Vector3 poition_course = courses_wall[i]->GetPosition();
-		const Vector3 scale_course = courses_wall[i]->GetScale();
+		const Vector3 poition_course = courses_wall[i]->GetHitBox().GetPosition();
+		const Vector3 scale_course = courses_wall[i]->GetHitBox().GetScale();
 
 
 		float aXR = poition_player.x + (scale_player.x / 2.0f);//Aの右
@@ -352,11 +353,11 @@ bool Play::CourseOut()
 
 bool Play::PlayerHitGoal()
 {
-	const Vector3 poition_player = player->GetPosition();
-	const Vector3 scale_player = player->GetScale();
+	const Vector3 poition_player = player->GetHitBox().GetPosition();
+	const Vector3 scale_player = player->GetHitBox().GetScale();
 
-	const Vector3 poition_course = goal->GetPosition();
-	const Vector3 scale_course = goal->GetScale();
+	const Vector3 poition_goal = goal->GetHitBox().GetPosition();
+	const Vector3 scale_goal = goal->GetHitBox().GetScale();
 
 
 	float aXR = poition_player.x + (scale_player.x / 2.0f);//Aの右
@@ -366,12 +367,12 @@ bool Play::PlayerHitGoal()
 	float aZF = poition_player.z - (scale_player.z / 2.0f);//Aの前
 	float aZB = poition_player.z + (scale_player.z / 2.0f);//Aの奥
 
-	float bXR = poition_course.x + (scale_course.x / 2.0f);//Bの右
-	float bXL = poition_course.x - (scale_course.x / 2.0f);//Bの左
-	float bYU = poition_course.y + (scale_course.y / 2.0f);//Bの上
-	float bYD = poition_course.y - (scale_course.y / 2.0f);//Bの下
-	float bZF = poition_course.z - (scale_course.z / 2.0f);//Bの前
-	float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
+	float bXR = poition_goal.x + (scale_goal.x / 2.0f);//Bの右
+	float bXL = poition_goal.x - (scale_goal.x / 2.0f);//Bの左
+	float bYU = poition_goal.y + (scale_goal.y / 2.0f);//Bの上
+	float bYD = poition_goal.y - (scale_goal.y / 2.0f);//Bの下
+	float bZF = poition_goal.z - (scale_goal.z / 2.0f);//Bの前
+	float bZB = poition_goal.z + (scale_goal.z / 2.0f);//Bの奥
 
 	bool hitGoal = aXR > bXL && aXL < bXR &&
 		aYU > bYD && aYD < bYU &&
@@ -382,15 +383,15 @@ bool Play::PlayerHitGoal()
 
 bool Play::PlayerHitObstacle()
 {
-	const Vector3 poition_player = player->GetPosition();
-	const Vector3 scale_player = player->GetScale();
+	const Vector3 poition_player = player->GetHitBox().GetPosition();
+	const Vector3 scale_player = player->GetHitBox().GetScale();
 
 	bool hitObstacle = false;
 
 	for (int i = 0; i < courses_obstacle.size(); i++)
 	{
-		const Vector3 poition_course = courses_obstacle[i]->GetPosition();
-		const Vector3 scale_course = courses_obstacle[i]->GetScale();
+		const Vector3 poition_obstacle = courses_obstacle[i]->GetHitBox().GetPosition();
+		const Vector3 scale_obstacle = courses_obstacle[i]->GetHitBox().GetScale();
 
 
 		float aXR = poition_player.x + (scale_player.x / 2.0f);//Aの右
@@ -400,12 +401,12 @@ bool Play::PlayerHitObstacle()
 		float aZF = poition_player.z - (scale_player.z / 2.0f);//Aの前
 		float aZB = poition_player.z + (scale_player.z / 2.0f);//Aの奥
 
-		float bXR = poition_course.x + (scale_course.x / 2.0f);//Bの右
-		float bXL = poition_course.x - (scale_course.x / 2.0f);//Bの左
-		float bYU = poition_course.y + (scale_course.y / 2.0f);//Bの上
-		float bYD = poition_course.y - (scale_course.y / 2.0f);//Bの下
-		float bZF = poition_course.z - (scale_course.z / 2.0f);//Bの前
-		float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
+		float bXR = poition_obstacle.x + (scale_obstacle.x / 2.0f);//Bの右
+		float bXL = poition_obstacle.x - (scale_obstacle.x / 2.0f);//Bの左
+		float bYU = poition_obstacle.y + (scale_obstacle.y / 2.0f);//Bの上
+		float bYD = poition_obstacle.y - (scale_obstacle.y / 2.0f);//Bの下
+		float bZF = poition_obstacle.z - (scale_obstacle.z / 2.0f);//Bの前
+		float bZB = poition_obstacle.z + (scale_obstacle.z / 2.0f);//Bの奥
 
 		hitObstacle = hitObstacle ||
 			(aXR > bXL && aXL < bXR &&

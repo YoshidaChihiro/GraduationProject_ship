@@ -1,17 +1,17 @@
 #include "GoalSquare.h"
-#include "FBXManager.h"
+#include "OBJLoader.h"
 
-GoalSquare::GoalSquare(const Vector3& arg_pos, const Vector3& arg_scale)
+GoalSquare::GoalSquare(const Vector3& arg_pos, const Vector3& arg_scale_hitBox)
 {
 	//アニメーション用にモデルのポインタを格納
-	myModel = FBXManager::GetModel("box");
+	myModel = OBJLoader::GetModel("goal");
 	//モデルの生成
 	Create(myModel);
 
 	name = typeid(*this).name();
 
 	position = arg_pos;
-	scale = arg_scale;
+	hitBox.SetScale(arg_scale_hitBox);
 
 	Initialize();
 }
@@ -22,7 +22,8 @@ GoalSquare::~GoalSquare()
 
 void GoalSquare::Initialize()
 {
-	color = {0.0f,0.7f,0.0f,1};
+	scale = Vector3(0.7f,0.7f,1) * hitBox.GetScale();
+	hitBox.SetPosition(position);
 }
 
 void GoalSquare::Update()
@@ -32,10 +33,10 @@ void GoalSquare::Update()
 
 void GoalSquare::Draw()
 {
-	Object::CustomDraw(true, true);
+	Object::CustomDraw(false, true);
 }
 
 void GoalSquare::DrawReady()
 {
-	pipelineName = "FBX";
+	pipelineName = "BasicObj";
 }

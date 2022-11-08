@@ -63,7 +63,9 @@ public:
 	inline const void Dead() { dead = true; }
 	inline const char* GetName()const { return name; }
 	void SetBillboardType(const BILLBOARD_TYPE billboardType) { this->billboardType = billboardType; }
-	
+
+	HitBox GetHitBox() { return hitBox; }
+
 protected:
 	std::unique_ptr<Object3D> object;
 	Vector3 position = { 0,0,0 };

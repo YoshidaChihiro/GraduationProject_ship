@@ -5,7 +5,7 @@
 class CourseSquare : public Object
 {
 public:
-	CourseSquare(const Vector3& arg_pos, const Vector3& arg_scale);
+	CourseSquare(const Vector3& arg_pos, const Vector3& arg_scale_hitBox);
 	~CourseSquare();
 	void Initialize()override;
 	void Update()override;
