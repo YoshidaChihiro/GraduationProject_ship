@@ -17,6 +17,9 @@ private:
 	static std::vector<std::vector<int>> ReadCSV(const std::string& arg_fileName);
 
 	//「ReadCSV」で読み取った値から壁の座標を算出する
-	static std::vector<Vector3> WallPosition_CSV(const std::string& arg_fileName);
+	static void WallPosition_CSV(const std::string& arg_fileName);
+
+	static std::vector<Vector3> positions_wall;
+	static std::vector<unsigned int> numbers_wall;
 };
 

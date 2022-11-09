@@ -29,6 +29,7 @@ void Player::Initialize()
 	pos_prev = position;
 	rotation = {};
 	velocity = {};
+	scale = { 1.5f };
 
 	onGround = false;
 	gravity = {};
@@ -191,7 +192,7 @@ float Player::GetPower()
 void Player::MovePos_sail()
 {
 	//‰ñ“]‚³‚¹‚é
-	const float speed_rotation = (angle - 90.0f) / 100.0f;
+	const float speed_rotation = (angle - 90.0f) / 50.0f;
 	rotation.y += power * speed_rotation;
 
 	if (rotation.y < 0.0f)
