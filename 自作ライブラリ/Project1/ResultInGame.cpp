@@ -1,6 +1,7 @@
 #include "ResultInGame.h"
 #include "PtrDelete.h"
 #include "Input.h"
+#include "Arudino.h"
 
 ResultInGame::ResultInGame()
 {
@@ -83,7 +84,7 @@ void ResultInGame::Update()
 	}
 
 	//Œˆ’è
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
+	if (Input::TriggerKey(DIK_SPACE) || Arudino::GetData_microSwitch_Trigger())
 	{
 		isActive = false;
 		switch (select)

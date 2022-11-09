@@ -7,21 +7,25 @@
 
 const float CourseBuilder::onesize = 20.0f;
 
+std::vector<Vector3> CourseBuilder::positions_wall = {};
+std::vector<unsigned int> CourseBuilder::numbers_wall = {};
+
 std::vector<CourseSquare*> CourseBuilder::BuildCourse_CSV(const std::string& arg_fileName)
 {
 	//CSVファイルから壁の位置情報を読み取る
-	const std::vector<Vector3> positions = WallPosition_CSV(arg_fileName);
+	positions_wall.clear();
+	numbers_wall.clear();
+	WallPosition_CSV(arg_fileName);
 
 	ObjectManager* objectManager = ObjectManager::GetInstance();
 	std::vector<CourseSquare*> courses_wall;
 
-	for (int i = 0; i < positions.size(); i++)
+	for (int i = 0; i < positions_wall.size(); i++)
 	{
-		const float scale_y = 10.0f;
-
 		CourseSquare* course = new CourseSquare(
-			positions[i],
-			{ onesize, scale_y, onesize });
+			numbers_wall[i],
+			positions_wall[i],
+			{ onesize, onesize, onesize });
 		objectManager->Add(course);
 		courses_wall.push_back(course);
 	}
@@ -63,9 +67,10 @@ std::vector<std::vector<int>> CourseBuilder::ReadCSV(const std::string& arg_file
 	return result;
 }
 
-std::vector<Vector3> CourseBuilder::WallPosition_CSV(const std::string& arg_fileName)
+void CourseBuilder::WallPosition_CSV(const std::string& arg_fileName)
 {
-	std::vector<Vector3> result;
+	std::vector<Vector3> result_pos;
+	std::vector<unsigned int> result_num;
 
 	//CSV読み込み
 	std::vector<std::vector<int>> csv = ReadCSV(arg_fileName);
@@ -78,30 +83,34 @@ std::vector<Vector3> CourseBuilder::WallPosition_CSV(const std::string& arg_file
 		size_x = csv[z].size();
 		for (int x = 0; x < size_x; x++)
 		{
-			if (csv[z][x] != 1)
+			if (csv[z][x] == 0)
 			{
 				continue;
 			}
 
-			//値が「1」の場合は座標を追加
-			const float position_y = 1.0f;
-			result.push_back({
+			//値が0以外の場合は座標を追加
+			const float position_y = 0.75f;
+			result_pos.push_back({
 				onesize * x,
 				position_y,
 				onesize * z * -1
 			});
+
+			//数値も追加しておく
+			result_num.push_back(csv[z][x]);
 		}
 	}
 
 	//コースの中心がワールド座標の原点に合うようにずらす
-	for (int i = 0; i < result.size(); i++)
+	for (int i = 0; i < result_pos.size(); i++)
 	{
-		result[i].x += onesize / 2;
-		result[i].z -= onesize / 2;
+		result_pos[i].x += onesize / 2;
+		result_pos[i].z -= onesize / 2;
 
-		result[i].x -= (size_x * onesize) / 2;
-		result[i].z += (size_z * onesize) / 2;
+		result_pos[i].x -= (size_x * onesize) / 2;
+		result_pos[i].z += (size_z * onesize) / 2;
 	}
 
-	return result;
+	positions_wall = result_pos;
+	numbers_wall = result_num;
 }

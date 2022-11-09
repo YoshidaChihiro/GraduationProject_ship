@@ -5,9 +5,9 @@
 #include "ObjectManager.h"
 #include "CollisionManager.h"
 
-class Arudino;
 class Player;
 class CourseSquare;
+class Ground;
 class GoalSquare;
 class CourseObstacle;
 class TimerRecord;
@@ -37,9 +37,6 @@ private:
 	ObjectManager* objectManager = nullptr;
 	CollisionManager* collisionManager = nullptr;
 
-	//カメラ振れ
-	bool isSway = false;
-
 	//タイマー
 	TimerRecord* timer = nullptr;
 
@@ -60,7 +57,7 @@ private:
 	//コース壁
 	std::vector<CourseSquare*> courses_wall;
 	//コース地面
-	std::vector<CourseSquare*> courses_ground;
+	std::vector<Ground*> grounds;
 	//ゴール地点
 	GoalSquare* goal = nullptr;
 	//障害物
@@ -68,6 +65,6 @@ private:
 	Vector3 playerForwordVec_stock = {};
 
 
-	//
-	Arudino* arudino = nullptr;
+	int data_prev_R = 0;
+	int data_prev_L = 0;
 };

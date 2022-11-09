@@ -28,7 +28,7 @@ void SpeedMeter::Draw()
 	PipelineState::SetPipeline("Sprite");
 
 	XMFLOAT2 position_base = { 1920 - 300,1080 - 100 };
-	XMFLOAT2 position_rank = { position_base.x + 150, position_base.y };
+	XMFLOAT2 position_rank = { position_base.x + 130, position_base.y };
 
 	sprite_speed->Draw(std::to_string((int)speed).size(), "number_default", position_rank);
 	sprite_base->DrawSprite("speed_base", position_base, 0.0f, { 0.7f, 0.7f });

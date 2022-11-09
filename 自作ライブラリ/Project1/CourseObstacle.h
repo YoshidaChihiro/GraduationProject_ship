@@ -5,7 +5,7 @@
 class CourseObstacle : public Object
 {
 public:
-	CourseObstacle(const Vector3& arg_pos, const Vector3& arg_scale);
+	CourseObstacle(const Vector3& arg_pos, const Vector3& arg_scale_hitBox);
 	~CourseObstacle();
 	void Initialize()override;
 	void Update()override;
