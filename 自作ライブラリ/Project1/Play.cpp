@@ -69,15 +69,13 @@ void Play::Initialize()
 	next = Ending;
 
 	camera->Initialize();
-	camera->SetDistance(12.0f);
+	camera->SetDistance(15.0f);
 	camera->SetTheta(0.4f);
 	Object3D::SetCamera(camera.get());
 
 	lightGroup->SetAmbientColor({ 1,1,1 });
-	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.0f,1 });
+	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.5f,1 });
 	Object3D::SetLightGroup(lightGroup.get());
-
-	isSway = false;
 
 	timer->Initialize();
 	timer->Start();
@@ -93,6 +91,9 @@ void Play::Initialize()
 
 	playerForwordVec_stock = {};
 
+	data_prev_R = 0;
+	data_prev_L = 0;
+
 	objectManager->Reset();
 
 	courses_wall.clear();
@@ -103,23 +104,29 @@ void Play::Initialize()
 	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2};
 	//RR_ゴール前
 	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -10 * CourseBuilder::onesize};
+	//Curve_スタート地点
+	Vector3 playerPosition = { 0, 10, -10 * CourseBuilder::onesize };
 	//test_中央
-	Vector3 playerPosition = { 0, 10, 0 };
+	//Vector3 playerPosition = { 0, 10, 0 };
 
 	player = new Player(playerPosition);
 	objectManager->Add(player);
 
 	//コース壁
-	courses_wall = CourseBuilder::BuildCourse_CSV("test.csv");
+	courses_wall = CourseBuilder::BuildCourse_CSV("Curve.csv");
 
 	//地面
 	Ground* ground = new Ground(Vector3(0, 0, 0), Vector3(24 * CourseBuilder::onesize, 1, 24 * CourseBuilder::onesize));
 	objectManager->Add(ground);
 	grounds.push_back(ground);
 
-	//ゴール地点
+	//RR_ゴール地点
+	//goal = new GoalSquare(
+	//	Vector3(-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 1, -3 * CourseBuilder::onesize),
+	//	Vector3(3 * CourseBuilder::onesize, CourseBuilder::onesize, CourseBuilder::onesize));
+	//Curve_ゴール地点
 	goal = new GoalSquare(
-		Vector3(-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 1, -3 * CourseBuilder::onesize),
+		Vector3(0, 1, 10 * CourseBuilder::onesize),
 		Vector3(3 * CourseBuilder::onesize, CourseBuilder::onesize, CourseBuilder::onesize));
 	objectManager->Add(goal);
 
@@ -134,28 +141,49 @@ void Play::Initialize()
 void Play::Update()
 {
 	//////////////////////////////
-	const float default_range = 5300.0f;//無風の値(!!要調整!!)
-	const int data_R = default_range - Arudino::GetData_ultrasonic(0);
-	const int data_L = default_range - Arudino::GetData_ultrasonic(1);
+	//超音波センサ
+	const float range_default = 400.0f;//無風状態のセンサーの上限値(!!要調整!!)
+	int data_R = Arudino::GetData_ultrasonic(0);
+	int data_L = Arudino::GetData_ultrasonic(1);
+
+	if (data_R >= range_default)//エラー回避
+	{
+		data_R = data_prev_R;
+	}
+	else
+	{
+		data_R = range_default - data_R;
+	}
+	if (data_L >= range_default)//エラー回避
+	{
+		data_L = data_prev_L;
+	}
+	else
+	{
+		data_L = range_default - data_L;
+	}
 
 	//風の強さ
 	float power = (data_R + data_L) / 2;//2つの値の平均
-	power /= default_range;//0～1に
+	power /= range_default;//0～1に
 	player->SetPower(power);
 
 	//風の向き
 	float angle = data_L - data_R;//2つの値の差
-	angle /= default_range;//-1～0～1に
+	angle /= range_default;//-1～0～1に
 	angle *= 90;//0～180に
 	angle += 90;
 	player->SetAngle(angle);
+
+	//前フレームの状態を保持
+	data_prev_R = data_R;
+	data_prev_L = data_L;
 	//////////////////////////////
 
 
 #ifdef _DEBUG
 	//初期化
-	if (Input::TriggerKey(DIK_R) ||
-		Arudino::GetData_microSwitch_Trigger())
+	if (Input::TriggerKey(DIK_R))
 	{
 		Initialize();
 		return;

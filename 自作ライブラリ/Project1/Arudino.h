@@ -20,7 +20,7 @@ private:
 	static bool ready;
 	static const int allDataNum_receive = 5;
 	static UINT8 receiveData[allDataNum_receive];
-	//static UINT8 sendData;
+	static UINT8 sendData;
 
 	//’´‰¹”gƒZƒ“ƒT
 	static UINT16 datas_ultrasonic[2];

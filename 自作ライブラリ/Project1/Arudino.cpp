@@ -6,7 +6,7 @@ HANDLE Arudino::Portarduino = {};
 
 bool Arudino::ready = false;
 UINT8 Arudino::receiveData[] = {};
-//UINT8 Arudino::sendData = {};
+UINT8 Arudino::sendData = {};
 
 //’´‰¹”gƒZƒ“ƒT
 UINT16 Arudino::datas_ultrasonic[] = {};
@@ -91,6 +91,11 @@ void Arudino::ReceiveData()
 
 void Arudino::SendData()
 {
+	//sendData = 'a';
+	//DWORD dwRead;
+	//ready = WriteFile(Portarduino, &sendData, sizeof(sendData), &dwRead, NULL);
+
+
 	//if (receiveData == '1')
 	//{
 	//	DWORD dwSendSize;
@@ -137,5 +142,6 @@ bool Arudino::GetData_microSwitch()
 
 bool Arudino::GetData_microSwitch_Trigger()
 {
-	return !isPressed_prev && datas_microSwitch;
+	//return !isPressed_prev && datas_microSwitch;
+	return false;
 }

@@ -37,9 +37,6 @@ private:
 	ObjectManager* objectManager = nullptr;
 	CollisionManager* collisionManager = nullptr;
 
-	//カメラ振れ
-	bool isSway = false;
-
 	//タイマー
 	TimerRecord* timer = nullptr;
 
@@ -66,4 +63,8 @@ private:
 	//障害物
 	std::vector<CourseObstacle*> courses_obstacle;
 	Vector3 playerForwordVec_stock = {};
+
+
+	int data_prev_R = 0;
+	int data_prev_L = 0;
 };
