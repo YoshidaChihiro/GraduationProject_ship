@@ -1,6 +1,7 @@
 #include "ModeSelect.h"
 #include "PtrDelete.h"
 #include "Input.h"
+#include "Arudino.h"
 
 ModeSelect::ModeSelect()
 {
@@ -45,7 +46,7 @@ void ModeSelect::Initialize()
 void ModeSelect::Update()
 {
 	//シーン切り替え
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
+	if (Input::TriggerKey(DIK_SPACE) || Arudino::GetData_microSwitch_Trigger())
 	{
 		//どのモードのシーンに切り替えるか
 		Chack_nextScene();

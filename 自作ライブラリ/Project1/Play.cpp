@@ -50,11 +50,6 @@ Play::Play()
 	resultView = new ResultInGame();
 
 	goalCounter = new GoalCounter();
-
-	//////////////////////////////
-	//arudino = new Arudino();
-	//arudino->Initialize();
-	//////////////////////////////
 }
 
 
@@ -66,11 +61,6 @@ Play::~Play()
 	PtrDelete(speedMeter);
 	PtrDelete(resultView);
 	PtrDelete(goalCounter);
-
-	//////////////////////////////
-	//arudino->End();
-	//PtrDelete(arudino);
-	//////////////////////////////
 }
 
 void Play::Initialize()
@@ -84,7 +74,7 @@ void Play::Initialize()
 	Object3D::SetCamera(camera.get());
 
 	lightGroup->SetAmbientColor({ 1,1,1 });
-	lightGroup->SetDirLightDir(0, { 0.3f,-0.8f,0.3f,1 });
+	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.0f,1 });
 	Object3D::SetLightGroup(lightGroup.get());
 
 	isSway = false;
@@ -105,18 +95,22 @@ void Play::Initialize()
 
 	objectManager->Reset();
 
+	courses_wall.clear();
+	grounds.clear();
+	courses_obstacle.clear();
+
 	//RR_スタート地点
 	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2};
 	//RR_ゴール前
-	Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -10 * CourseBuilder::onesize};
+	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -10 * CourseBuilder::onesize};
 	//test_中央
-	//Vector3 playerPosition = { 0, 10, 0 };
+	Vector3 playerPosition = { 0, 10, 0 };
 
 	player = new Player(playerPosition);
 	objectManager->Add(player);
 
 	//コース壁
-	courses_wall = CourseBuilder::BuildCourse_CSV("RR.csv");
+	courses_wall = CourseBuilder::BuildCourse_CSV("test.csv");
 
 	//地面
 	Ground* ground = new Ground(Vector3(0, 0, 0), Vector3(24 * CourseBuilder::onesize, 1, 24 * CourseBuilder::onesize));
@@ -139,9 +133,29 @@ void Play::Initialize()
 
 void Play::Update()
 {
+	//////////////////////////////
+	const float default_range = 5300.0f;//無風の値(!!要調整!!)
+	const int data_R = default_range - Arudino::GetData_ultrasonic(0);
+	const int data_L = default_range - Arudino::GetData_ultrasonic(1);
+
+	//風の強さ
+	float power = (data_R + data_L) / 2;//2つの値の平均
+	power /= default_range;//0～1に
+	player->SetPower(power);
+
+	//風の向き
+	float angle = data_L - data_R;//2つの値の差
+	angle /= default_range;//-1～0～1に
+	angle *= 90;//0～180に
+	angle += 90;
+	player->SetAngle(angle);
+	//////////////////////////////
+
+
 #ifdef _DEBUG
 	//初期化
-	if (Input::TriggerKey(DIK_R))
+	if (Input::TriggerKey(DIK_R) ||
+		Arudino::GetData_microSwitch_Trigger())
 	{
 		Initialize();
 		return;
@@ -167,25 +181,6 @@ void Play::Update()
 	{
 		player->SetIsCanInput(true);
 	}
-
-	//////////////////////////////
-	//arudino->ReceiveData();
-	//const float default_range = 2000.0f;//無風時の値(!!要調整!!)
-	//const int data_R = default_range - arudino->GetData(0);
-	//const int data_L = default_range - arudino->GetData(1);
-
-	////風の強さ
-	//float power = (data_R + data_L) / 2;//2つの値の平均
-	//power /= default_range;//0～1に
-	//player->SetPower(power);
-
-	//風の向き
-	//int angle = data_L - data_R;//2つの値の差
-	//angle /= default_range;//-1～0～1に
-	//angle *= 90;//0～180に
-	//angle += 90;
-	//player->SetAngle(angle);
-	//////////////////////////////
 
 	//プレイヤーの接地判定
 	bool onGround = PlayerOnGround();

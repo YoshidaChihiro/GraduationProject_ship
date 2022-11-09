@@ -34,7 +34,7 @@ void Ending::Initialize()
 void Ending::Update()
 {
 	//ÉVÅ[ÉìêÿÇËë÷Ç¶
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
+	if (Input::TriggerKey(DIK_SPACE))
 	{
 		Audio::AllStopSE();
 		ShutDown();

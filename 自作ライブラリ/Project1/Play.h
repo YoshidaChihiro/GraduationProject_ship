@@ -5,7 +5,6 @@
 #include "ObjectManager.h"
 #include "CollisionManager.h"
 
-class Arudino;
 class Player;
 class CourseSquare;
 class Ground;
@@ -67,8 +66,4 @@ private:
 	//è·äQï®
 	std::vector<CourseObstacle*> courses_obstacle;
 	Vector3 playerForwordVec_stock = {};
-
-
-	//
-	Arudino* arudino = nullptr;
 };

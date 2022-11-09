@@ -27,6 +27,7 @@
 #include "SceneManager.h"
 #include "Sprite.h"
 #include "TextureResource.h"
+#include "Arudino.h"
 
 DrawMode::MODE DrawMode::mode = DrawMode::None;
 bool DrawMode::drawImGui = true;
@@ -49,6 +50,8 @@ Game::Game()
 	win = std::make_unique<Window>(1920,1080);
 	directX = DirectXLib::GetInstance();
 	computeWrapper = ComputeWrapper::GetInstance();
+
+	Arudino::Initialize();
 }
 
 Game * Game::GetInstance()
@@ -62,6 +65,7 @@ Game * Game::GetInstance()
 
 Game::~Game()
 {
+	Arudino::End();
 }
 
 void Game::RoadAsset()
@@ -307,6 +311,9 @@ void Game::Run()
 		{
 			Input::Update();
 			Alpha::Update();
+
+			Arudino::ReceiveData();
+
 			if (Input::TriggerKey(DIK_1))
 			{
 				DrawMode::SetMode(DrawMode::None);
@@ -326,6 +333,9 @@ void Game::Run()
 			sceneManeger->Update();
 			ParticleManager::GetInstance()->Update();
 			directX->ComputeBegin();
+
+			Arudino::SendData();
+
 			//2.画面クリアコマンドここまで
 			//Object3D::SetDrawShadow(true);
 			//shadowMap->PreDraw();

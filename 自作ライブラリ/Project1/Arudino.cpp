@@ -2,10 +2,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+HANDLE Arudino::Portarduino = {};
 
-Arudino::Arudino()
-{
-}
+bool Arudino::ready = false;
+UINT8 Arudino::receiveData[] = {};
+//UINT8 Arudino::sendData = {};
+
+//超音波センサ
+UINT16 Arudino::datas_ultrasonic[] = {};
+
+//マイクロスイッチ
+UINT8 Arudino::datas_microSwitch = 0;
+bool Arudino::isPressed_prev = false;
+
+
+//Arudino::Arudino()
+//{
+//}
 
 void Arudino::Initialize()
 {
@@ -57,19 +70,23 @@ void Arudino::ReceiveData()
 {
 	//受信待機
 	DWORD dwRead;
-	ready = ReadFile(Portarduino, receiveData, sizeof(UINT8) * 4, &dwRead, NULL);
+	ready = ReadFile(Portarduino, receiveData, sizeof(UINT8) * allDataNum_receive, &dwRead, NULL);
 	if (!ready) {
 		printf("NG5\n");
 	}
 
+	//超音波センサ
 	UINT16 data1 = (UINT16)(receiveData[0] << 8) | (UINT16)receiveData[1];
 	UINT16 data2 = (UINT16)(receiveData[2] << 8) | (UINT16)receiveData[3];
 	printf("data1 : %u\n", data1);
 	printf("data2 : %u\n", data2);
 	printf("\n");
+	datas_ultrasonic[0] = data1;
+	datas_ultrasonic[1] = data2;
 
-	datas[0] = data1;
-	datas[1] = data2;
+	//マイクロスイッチ
+	isPressed_prev = datas_microSwitch;
+	datas_microSwitch = receiveData[4];
 }
 
 void Arudino::SendData()
@@ -108,7 +125,17 @@ void Arudino::End()
 	CloseHandle(Portarduino);
 }
 
-UINT16 Arudino::GetData(const int arg_arrayNum)
+UINT16 Arudino::GetData_ultrasonic(const int arg_arrayNum)
 {
-	return datas[arg_arrayNum];
+	return datas_ultrasonic[arg_arrayNum];
+}
+
+bool Arudino::GetData_microSwitch()
+{
+	return datas_microSwitch;
+}
+
+bool Arudino::GetData_microSwitch_Trigger()
+{
+	return !isPressed_prev && datas_microSwitch;
 }

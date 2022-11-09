@@ -5,6 +5,7 @@
 #include "Object3D.h"
 #include "Sprite3D.h"
 #include "PtrDelete.h"
+#include "Arudino.h"
 
 Title::Title()
 {
@@ -48,7 +49,7 @@ void Title::Initialize()
 void Title::Update()
 {
 	//ÉVÅ[ÉìêÿÇËë÷Ç¶
-	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
+	if (Input::TriggerKey(DIK_SPACE) || Arudino::GetData_microSwitch_Trigger())
 	{
 		sceneChangeStart = true;
 	}
