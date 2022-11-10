@@ -51,6 +51,7 @@ void Title::Update()
 	//ƒV[ƒ“Ø‚è‘Ö‚¦
 	if (Input::TriggerKey(DIK_SPACE) || Arudino::GetData_microSwitch_Trigger())
 	{
+		Audio::PlaySE("SE_decision", Audio::volume_se * 1.0f);
 		sceneChangeStart = true;
 	}
 	if (sceneChangeStart)

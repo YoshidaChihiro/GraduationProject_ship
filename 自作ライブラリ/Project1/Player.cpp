@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "OBJLoader.h"
 #include "Input.h"
+#include "Audio.h"
 #include "DrawMode.h"
 #include "imgui.h"
 #include "CollisionManager.h"
@@ -33,8 +34,6 @@ void Player::Initialize()
 
 	onGround = false;
 	gravity = {};
-
-	isCourseOut = false;
 
 	isHitObstacle = false;
 	count_hitObstacle = 0;
@@ -143,16 +142,6 @@ void Player::SetOnGround(const bool arg_onGround)
 	onGround = arg_onGround;
 }
 
-void Player::SetIsCourseOut(const bool arg_isCourseOut)
-{
-	//–ß‚·
-	if (!isCourseOut && arg_isCourseOut)
-	{
-		position = pos_prev;
-	}
-	isCourseOut = arg_isCourseOut;
-}
-
 void Player::HitObstacle()
 {
 	isHitObstacle = true;
@@ -162,6 +151,7 @@ void Player::HitObstacle()
 	rotation_hitStart_z = rotation.z;
 	rotEnd_Z = 35;
 	count_hitObstacle_rotEndZ = 0;
+	Audio::PlaySE("SE_collision", Audio::volume_se * 0.8f);
 }
 
 bool Player::GetIsHitObstacle()

@@ -28,7 +28,7 @@ public:
 
 private:
 	bool PlayerOnGround();
-	bool CourseOut();
+	bool PlayerHitWall();
 	bool PlayerHitGoal();
 	bool PlayerHitObstacle();
 

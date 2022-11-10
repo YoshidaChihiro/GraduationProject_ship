@@ -357,7 +357,7 @@ void Pause::Decision()
 {
 	if (Input::TriggerPadButton(XINPUT_GAMEPAD_A) || Input::TriggerKey(DIK_SPACE))
 	{
-		Audio::PlaySE("SE_Decision", 1.0f * Audio::volume_se);
+		Audio::PlaySE("SE_decision", Audio::volume_se * 1.0f);
 
 		//ê›íËÇï¬Ç∂ÇÈ
 		activeFlag = false;

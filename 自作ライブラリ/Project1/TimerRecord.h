@@ -52,6 +52,7 @@ private:
 	const int limit_default = 999 * 60;
 	const int limit_countDown = 3 * 60;
 	bool isCountDown = false;
+	int time_prev = 0;
 
 	bool isResult = false;
 	int count_movePos = 0;

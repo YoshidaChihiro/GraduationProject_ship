@@ -100,7 +100,7 @@ void Game::RoadAsset()
 
 		//timer
 		Texture::LoadTexture("timer_base", "ui_ingame/timer_base.png");
-		Texture::LoadTexture("number_default", "number.png");
+		Texture::LoadTexture("number_default", "number_ingame.png");
 		Texture::LoadTexture("number_comma", "comma.png");
 
 		//ranking
@@ -132,7 +132,17 @@ void Game::RoadAsset()
 		break;
 	case 3:
 		//WAVファイルの読み込み
-		//Audio::LoadFile("BGM_Title", "BGM/Title_BGM.wav");
+		//BGM
+		Audio::LoadFile("BGM_InGame", "BGM/BGM_InGame.wav");
+
+		//SE
+		Audio::LoadFile("SE_clear", "SE/clear.wav");
+		Audio::LoadFile("SE_collision", "SE/collision.wav");
+		Audio::LoadFile("SE_countdown_1", "SE/countdown_1.wav");
+		Audio::LoadFile("SE_countdown_2", "SE/countdown_2.wav");
+		Audio::LoadFile("SE_decision", "SE/decision.wav");
+		Audio::LoadFile("SE_select", "SE/select.wav");
+
 		break;
 	case 4:
 		//FBXファイルの読み込み

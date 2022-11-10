@@ -18,10 +18,7 @@ public:
 	//接地判定の結果を入れる
 	void SetOnGround(const bool arg_onGround);
 
-	//コースアウトの結果を入れる
-	void SetIsCourseOut(const bool arg_isCourseOut);
-
-	//障害物にぶつかった時
+	//壁や障害物にぶつかった時
 	void HitObstacle();
 	bool GetIsHitObstacle();
 
@@ -44,7 +41,7 @@ private:
 	//帆入力の値に寄せていく
 	void MovePos_linear();
 
-	//障害物との衝突時
+	//壁や障害物との衝突時
 	void MovePos_Obstacle();
 
 
@@ -59,9 +56,6 @@ private:
 	bool onGround = false;
 	Vector3 gravity = {};
 	const float gravity_acc = 0.02f;
-
-	//コースアウト判定
-	bool isCourseOut = false;
 
 	//障害物衝突判定
 	bool isHitObstacle = false;

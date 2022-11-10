@@ -77,6 +77,8 @@ void Play::Initialize()
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.5f,1 });
 	Object3D::SetLightGroup(lightGroup.get());
 
+	Audio::PlayBGM("BGM_InGame", Audio::volume_bgm * 0.05f);
+
 	timer->Initialize();
 	timer->Start();
 
@@ -194,7 +196,13 @@ void Play::Update()
 	const bool hitGoal = PlayerHitGoal();
 	if (hitGoal && !hitGoal_prev)
 	{
+		bool isEnd = goalCounter->GetEnd();
 		goalCounter->Add();
+		//ゴール初回のみ
+		if (!isEnd && goalCounter->GetEnd())
+		{
+			Audio::PlaySE("SE_clear", Audio::volume_se * 0.8f);
+		}
 	}
 	if (goalCounter->GetEnd())
 	{
@@ -213,13 +221,11 @@ void Play::Update()
 	//プレイヤーの接地判定
 	bool onGround = PlayerOnGround();
 	player->SetOnGround(onGround);
-	//プレイヤーの順路外判定
-	bool isCourseOut = CourseOut();
-	player->SetIsCourseOut(isCourseOut);
 
-	//障害物判定
+	//衝突判定
+	bool isHitWall = PlayerHitWall();
 	bool isHitObstacle = PlayerHitObstacle();
-	if (isHitObstacle || isCourseOut)
+	if (isHitObstacle || isHitWall)
 	{
 		//跳ね返す
 		player->HitObstacle();
@@ -338,7 +344,7 @@ bool Play::PlayerOnGround()
 	return onGround;
 }
 
-bool Play::CourseOut()
+bool Play::PlayerHitWall()
 {
 	const Vector3 poition_player = player->GetHitBox().GetPosition();
 	const Vector3 scale_player = player->GetHitBox().GetScale();
