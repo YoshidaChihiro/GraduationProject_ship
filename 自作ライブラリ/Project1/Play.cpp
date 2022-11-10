@@ -104,13 +104,13 @@ void Play::Initialize()
 	courses_obstacle.clear();
 
 	//RR_スタート地点
-	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2};
+	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 5, -CourseBuilder::onesize / 2};
 	//RR_ゴール前
-	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -10 * CourseBuilder::onesize};
+	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 5, -10 * CourseBuilder::onesize};
 	//Curve_スタート地点
-	Vector3 playerPosition = { 0, 10, 5 * CourseBuilder::onesize };
+	Vector3 playerPosition = { 0, 5, -16 * CourseBuilder::onesize };
 	//test_中央
-	//Vector3 playerPosition = { 0, 10, 0 };
+	//Vector3 playerPosition = { 0, 5, 0 };
 
 	player = new Player(playerPosition);
 	objectManager->Add(player);
@@ -119,7 +119,7 @@ void Play::Initialize()
 	courses_wall = CourseBuilder::BuildCourse_CSV("Curve.csv");
 
 	//地面
-	Ground* ground = new Ground(Vector3(0, 0, 0), Vector3(24 * CourseBuilder::onesize, 1, 24 * CourseBuilder::onesize));
+	Ground* ground = new Ground(Vector3(0, 0, 0), Vector3((36 + 10) * CourseBuilder::onesize, 1, (36 + 10) * CourseBuilder::onesize));
 	objectManager->Add(ground);
 	grounds.push_back(ground);
 
@@ -129,14 +129,14 @@ void Play::Initialize()
 	//	Vector3(3 * CourseBuilder::onesize, CourseBuilder::onesize, CourseBuilder::onesize));
 	//Curve_ゴール地点
 	goal = new GoalSquare(
-		Vector3(0, 1, 10 * CourseBuilder::onesize),
+		Vector3(0, 1, 14 * CourseBuilder::onesize),
 		Vector3(3 * CourseBuilder::onesize, CourseBuilder::onesize, CourseBuilder::onesize));
 	objectManager->Add(goal);
 
 	//障害物
-	CourseObstacle* obstacle = new CourseObstacle({ -10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2),1,2 * CourseBuilder::onesize }, { 3,3,3 });
-	objectManager->Add(obstacle);
-	courses_obstacle.push_back(obstacle);
+	//CourseObstacle* obstacle = new CourseObstacle({ -10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2),1,2 * CourseBuilder::onesize }, { 3,3,3 });
+	//objectManager->Add(obstacle);
+	//courses_obstacle.push_back(obstacle);
 
 	ParticleManager::GetInstance()->ClearDeadEffect();
 }
