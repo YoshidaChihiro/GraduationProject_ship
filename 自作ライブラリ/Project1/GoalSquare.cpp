@@ -22,7 +22,7 @@ GoalSquare::~GoalSquare()
 
 void GoalSquare::Initialize()
 {
-	scale = Vector3(0.7f,0.7f,1) * hitBox.GetScale();
+	scale = Vector3(0.55f,0.4f,1) * hitBox.GetScale();
 	hitBox.SetPosition(position);
 }
 
