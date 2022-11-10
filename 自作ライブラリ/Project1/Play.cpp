@@ -77,6 +77,7 @@ void Play::Initialize()
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.5f,1 });
 	Object3D::SetLightGroup(lightGroup.get());
 
+	Audio::StopBGM("BGM_InGame");
 	Audio::PlayBGM("BGM_InGame", Audio::volume_bgm * 0.05f);
 
 	timer->Initialize();
@@ -107,7 +108,7 @@ void Play::Initialize()
 	//RR_ゴール前
 	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -10 * CourseBuilder::onesize};
 	//Curve_スタート地点
-	Vector3 playerPosition = { 0, 10, -10 * CourseBuilder::onesize };
+	Vector3 playerPosition = { 0, 10, 5 * CourseBuilder::onesize };
 	//test_中央
 	//Vector3 playerPosition = { 0, 10, 0 };
 
@@ -248,6 +249,7 @@ void Play::Update()
 	{
 		next = ModeSelect;
 		Audio::AllStopSE();
+		Audio::StopBGM("BGM_InGame");
 		ShutDown();
 		return;
 	}
@@ -261,6 +263,7 @@ void Play::Update()
 	{
 		next = Title;
 		Audio::AllStopSE();
+		Audio::StopBGM("BGM_InGame");
 		ShutDown();
 		return;
 	}

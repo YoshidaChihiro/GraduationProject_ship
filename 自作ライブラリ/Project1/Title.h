@@ -18,6 +18,7 @@ private:
 	std::unique_ptr<InGameCamera> camera;
 	std::unique_ptr<LightGroup> lightGroup;
 
+	Sprite* back = nullptr;
 	Sprite* logo = nullptr;
 	Sprite* startConfig = nullptr;
 	float alphaStart = 1.0f;

@@ -89,6 +89,7 @@ void Game::RoadAsset()
 		Texture::LoadTexture("wind", "wind.png");
 
 		//title
+		Texture::LoadTexture("title_back", "title/title_back.png");
 		Texture::LoadTexture("title_logo", "title/title_logo.png");
 		Texture::LoadTexture("title_start", "title/title_start.png");
 
@@ -111,10 +112,10 @@ void Game::RoadAsset()
 
 		//result
 		Texture::LoadTexture("result_goal", "result/goal.png");
-		Texture::LoadTexture("result_frame", "result/frame.png");
-		Texture::LoadTexture("result_mode", "result/mode.png");
-		Texture::LoadTexture("result_retry", "result/retry.png");
-		Texture::LoadTexture("result_title", "result/title.png");
+		Texture::LoadTexture("result_frame", "result/result_frame.png");
+		Texture::LoadTexture("result_mode", "result/result_mode.png");
+		Texture::LoadTexture("result_retry", "result/result_retry.png");
+		Texture::LoadTexture("result_title", "result/result_title.png");
 
 
 		break;
