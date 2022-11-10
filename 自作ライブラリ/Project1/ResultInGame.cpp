@@ -28,8 +28,8 @@ void ResultInGame::Initialize()
 	isActive = false;
 	alpha_base = 0.0f;
 	isAlphaEnd_base = false;
-	select = 0;
-	position_frame = position_mode;
+	select = 1;
+	position_frame = position_retry;
 	isMode = false;
 	isRetry = false;
 	isTitle = false;
@@ -64,7 +64,7 @@ void ResultInGame::Update()
 	{
 		select++;
 	}
-	if (Input::TriggerKey(DIK_LEFT) && select > 0)
+	if (Input::TriggerKey(DIK_LEFT) && select > 1)
 	{
 		select--;
 	}
@@ -116,7 +116,7 @@ void ResultInGame::PostDraw()
 
 	if (isAlphaEnd_base)
 	{
-		select_mode->DrawSprite("result_mode", position_mode);
+		//select_mode->DrawSprite("result_mode", position_mode);
 		select_retry->DrawSprite("result_retry", position_retry);
 		select_title->DrawSprite("result_title", position_title);
 

@@ -96,8 +96,8 @@ void TimerRecord::Draw()
 	int digit = 2;
 	sprite_seconds->Draw(digit, "number_default", position_seconds);
 	sprite_minutes->Draw(digit, "number_default", position_minutes);
-	sprite_decimal->Draw(digit, "number_default", position_decimal);
-	for (int i = 0; i < arrayCount_comma; i++)
+	//sprite_decimal->Draw(digit, "number_default", position_decimal);
+	for (int i = 0; i < arrayCount_comma - 1; i++)
 	{
 		sprite_comma[i]->DrawSprite("number_comma", position_comma[i]);
 	}
@@ -137,11 +137,14 @@ void TimerRecord::SettingPosition()
 	//position_base = { position_center.x, 64 };
 
 	//•b
-	position_seconds = position_base;
+	position_seconds = {
+		position_base.x + (size_numberX * 1.5f),
+		position_base.y
+	};
 
 	//•ª
 	position_minutes = {
-		position_base.x - (size_numberX * 3),
+		position_base.x - (size_numberX * 1.5f),
 		position_base.y
 	};
 
@@ -152,7 +155,7 @@ void TimerRecord::SettingPosition()
 	};
 
 	//
-	position_comma[0] = { position_base.x - (size_numberX * 1.5f), position_base.y };
+	position_comma[0] = position_base;
 	position_comma[1] = { position_base.x + (size_numberX * 1.5f), position_base.y };
 
 }

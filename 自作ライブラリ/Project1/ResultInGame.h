@@ -35,8 +35,8 @@ private:
 	Sprite* select_title = nullptr;
 
 	const XMFLOAT2 position_mode = { 480, 900 };
-	const XMFLOAT2 position_retry = { 480 * 2, 900 };
-	const XMFLOAT2 position_title = { 480 * 3, 900 };
+	const XMFLOAT2 position_retry = { 640, 900 };
+	const XMFLOAT2 position_title = { 640 * 2, 900 };
 
 	bool isMode = false;
 	bool isRetry = false;
