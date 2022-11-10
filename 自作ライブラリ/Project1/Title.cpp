@@ -20,6 +20,7 @@ Title::Title()
 	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightColor(0, { 1,1,1 });
 
+	back = new Sprite();
 	logo = new Sprite();
 	startConfig = new Sprite();
 }
@@ -27,6 +28,7 @@ Title::Title()
 
 Title::~Title()
 {
+	PtrDelete(back);
 	PtrDelete(logo);
 	PtrDelete(startConfig);
 }
@@ -51,6 +53,7 @@ void Title::Update()
 	//ƒV[ƒ“Ø‚è‘Ö‚¦
 	if (Input::TriggerKey(DIK_SPACE) || Arudino::GetData_microSwitch_Trigger())
 	{
+		Audio::PlaySE("SE_decision", Audio::volume_se * 1.0f);
 		sceneChangeStart = true;
 	}
 	if (sceneChangeStart)
@@ -80,13 +83,15 @@ void Title::PreDraw()
 {
 	PipelineState::SetPipeline("Sprite");
 
-	XMFLOAT2 pos_logo = { 1920 / 2, 1080 / 2 };
-	logo->DrawSprite("title_logo", pos_logo);
+	XMFLOAT2 pos_center = { 1920 / 2, 1080 / 2 };
+	logo->DrawSprite("title_logo", pos_center, 0.0f, {0.9f,0.9f});
 
-	XMFLOAT2 pos_start = { 1920 / 2, 1080 / 5 * 4 };
-	startConfig->DrawSprite("title_start", pos_start, 0.0f, { 0.5f,0.5f }, { 1,1,1,alphaStart });
+	back->DrawSprite("title_back", pos_center);
+
 }
 
 void Title::PostDraw()
 {
+	XMFLOAT2 pos_start = { 1920 / 2, 880 };
+	startConfig->DrawSprite("title_start", pos_start, 0.0f, { 0.9f,0.9f }, { 1,1,1,alphaStart }, {0.5f,0.5f}, "NoAlphaToCoverageSprite");
 }

@@ -1,6 +1,7 @@
 #include "ResultInGame.h"
 #include "PtrDelete.h"
 #include "Input.h"
+#include "Audio.h"
 #include "Arudino.h"
 
 ResultInGame::ResultInGame()
@@ -62,10 +63,12 @@ void ResultInGame::Update()
 	//ëIëïœçX
 	if (Input::TriggerKey(DIK_RIGHT) && select < 2)
 	{
+		Audio::PlaySE("SE_select", Audio::volume_se * 0.7f);
 		select++;
 	}
 	if (Input::TriggerKey(DIK_LEFT) && select > 1)
 	{
+		Audio::PlaySE("SE_select", Audio::volume_se * 0.7f);
 		select--;
 	}
 	switch (select)
@@ -87,6 +90,7 @@ void ResultInGame::Update()
 	if (Input::TriggerKey(DIK_SPACE) || Arudino::GetData_microSwitch_Trigger())
 	{
 		isActive = false;
+		Audio::PlaySE("SE_decision", Audio::volume_se * 1.0f);
 		switch (select)
 		{
 		case 0:

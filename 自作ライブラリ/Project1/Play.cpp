@@ -77,6 +77,9 @@ void Play::Initialize()
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.5f,1 });
 	Object3D::SetLightGroup(lightGroup.get());
 
+	Audio::StopBGM("BGM_InGame");
+	Audio::PlayBGM("BGM_InGame", Audio::volume_bgm * 0.05f);
+
 	timer->Initialize();
 	timer->Start();
 
@@ -101,13 +104,13 @@ void Play::Initialize()
 	courses_obstacle.clear();
 
 	//RR_スタート地点
-	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -CourseBuilder::onesize / 2};
+	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 5, -CourseBuilder::onesize / 2};
 	//RR_ゴール前
-	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 10, -10 * CourseBuilder::onesize};
+	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 5, -10 * CourseBuilder::onesize};
 	//Curve_スタート地点
-	Vector3 playerPosition = { 0, 10, -10 * CourseBuilder::onesize };
+	Vector3 playerPosition = { 0, 5, -16 * CourseBuilder::onesize };
 	//test_中央
-	//Vector3 playerPosition = { 0, 10, 0 };
+	//Vector3 playerPosition = { 0, 5, 0 };
 
 	player = new Player(playerPosition);
 	objectManager->Add(player);
@@ -116,7 +119,7 @@ void Play::Initialize()
 	courses_wall = CourseBuilder::BuildCourse_CSV("Curve.csv");
 
 	//地面
-	Ground* ground = new Ground(Vector3(0, 0, 0), Vector3(24 * CourseBuilder::onesize, 1, 24 * CourseBuilder::onesize));
+	Ground* ground = new Ground(Vector3(0, 0, 0), Vector3((36 + 10) * CourseBuilder::onesize, 1, (36 + 10) * CourseBuilder::onesize));
 	objectManager->Add(ground);
 	grounds.push_back(ground);
 
@@ -126,14 +129,14 @@ void Play::Initialize()
 	//	Vector3(3 * CourseBuilder::onesize, CourseBuilder::onesize, CourseBuilder::onesize));
 	//Curve_ゴール地点
 	goal = new GoalSquare(
-		Vector3(0, 1, 10 * CourseBuilder::onesize),
+		Vector3(0, 1, 14 * CourseBuilder::onesize),
 		Vector3(3 * CourseBuilder::onesize, CourseBuilder::onesize, CourseBuilder::onesize));
 	objectManager->Add(goal);
 
 	//障害物
-	CourseObstacle* obstacle = new CourseObstacle({ -10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2),1,2 * CourseBuilder::onesize }, { 3,3,3 });
-	objectManager->Add(obstacle);
-	courses_obstacle.push_back(obstacle);
+	//CourseObstacle* obstacle = new CourseObstacle({ -10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2),1,2 * CourseBuilder::onesize }, { 3,3,3 });
+	//objectManager->Add(obstacle);
+	//courses_obstacle.push_back(obstacle);
 
 	ParticleManager::GetInstance()->ClearDeadEffect();
 }
@@ -194,7 +197,13 @@ void Play::Update()
 	const bool hitGoal = PlayerHitGoal();
 	if (hitGoal && !hitGoal_prev)
 	{
+		bool isEnd = goalCounter->GetEnd();
 		goalCounter->Add();
+		//ゴール初回のみ
+		if (!isEnd && goalCounter->GetEnd())
+		{
+			Audio::PlaySE("SE_clear", Audio::volume_se * 0.8f);
+		}
 	}
 	if (goalCounter->GetEnd())
 	{
@@ -213,13 +222,11 @@ void Play::Update()
 	//プレイヤーの接地判定
 	bool onGround = PlayerOnGround();
 	player->SetOnGround(onGround);
-	//プレイヤーの順路外判定
-	bool isCourseOut = CourseOut();
-	player->SetIsCourseOut(isCourseOut);
 
-	//障害物判定
+	//衝突判定
+	bool isHitWall = PlayerHitWall();
 	bool isHitObstacle = PlayerHitObstacle();
-	if (isHitObstacle || isCourseOut)
+	if (isHitObstacle || isHitWall)
 	{
 		//跳ね返す
 		player->HitObstacle();
@@ -242,6 +249,7 @@ void Play::Update()
 	{
 		next = ModeSelect;
 		Audio::AllStopSE();
+		Audio::StopBGM("BGM_InGame");
 		ShutDown();
 		return;
 	}
@@ -255,6 +263,7 @@ void Play::Update()
 	{
 		next = Title;
 		Audio::AllStopSE();
+		Audio::StopBGM("BGM_InGame");
 		ShutDown();
 		return;
 	}
@@ -338,7 +347,7 @@ bool Play::PlayerOnGround()
 	return onGround;
 }
 
-bool Play::CourseOut()
+bool Play::PlayerHitWall()
 {
 	const Vector3 poition_player = player->GetHitBox().GetPosition();
 	const Vector3 scale_player = player->GetHitBox().GetScale();

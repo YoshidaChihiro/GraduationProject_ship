@@ -1,6 +1,7 @@
 #include "TimerRecord.h"
 #include "PtrDelete.h"
 #include "Easing.h"
+#include "Audio.h"
 
 TimerRecord::TimerRecord()
 {
@@ -40,6 +41,7 @@ void TimerRecord::Initialize()
 	decimal = 0.0f;
 	position_base = { 960, 64 };
 	isCountDown = false;
+	time_prev = 0;
 	isResult = false;
 	count_movePos = 0;
 }
@@ -65,11 +67,18 @@ void TimerRecord::Update()
 
 		if (timer->IsTime())
 		{
+			Audio::PlaySE("SE_countdown_2", Audio::volume_se * 0.5f);
 			isCountDown = false;
 			isAction = true;
 			timer->Initialize();
 			timer->SetLimit(limit_default);
 		}
+		else if (time_prev != (int)seconds_countDown)
+		{
+			Audio::PlaySE("SE_countdown_1", Audio::volume_se * 0.5f);
+		}
+
+		time_prev = seconds_countDown;
 	}
 	//ƒŠƒUƒ‹ƒg•\Ž¦
 	else if (isResult)

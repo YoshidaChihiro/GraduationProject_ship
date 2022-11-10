@@ -1,6 +1,7 @@
 #include "ModeSelect.h"
 #include "PtrDelete.h"
 #include "Input.h"
+#include "Audio.h"
 #include "Arudino.h"
 
 ModeSelect::ModeSelect()
@@ -48,6 +49,7 @@ void ModeSelect::Update()
 	//シーン切り替え
 	if (Input::TriggerKey(DIK_SPACE) || Arudino::GetData_microSwitch_Trigger())
 	{
+		Audio::PlaySE("SE_decision", Audio::volume_se * 1.0f);
 		//どのモードのシーンに切り替えるか
 		Chack_nextScene();
 		ShutDown();
@@ -93,10 +95,12 @@ void ModeSelect::Mode_mode()
 {
 	if (Input::TriggerKey(DIK_UP) && (int)mode > 0)
 	{
+		Audio::PlaySE("SE_select", Audio::volume_se * 0.7f);
 		mode = (GAMEMODE)((int)mode - 1);
 	}
 	else if (Input::TriggerKey(DIK_DOWN) && (int)mode < (mode_numMax - 1))
 	{
+		Audio::PlaySE("SE_select", Audio::volume_se * 0.7f);
 		mode = (GAMEMODE)((int)mode + 1);
 	}
 }
