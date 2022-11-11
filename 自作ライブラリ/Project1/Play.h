@@ -63,8 +63,4 @@ private:
 	//è·äQï®
 	std::vector<CourseObstacle*> courses_obstacle;
 	Vector3 playerForwordVec_stock = {};
-
-
-	int data_prev_R = 0;
-	int data_prev_L = 0;
 };

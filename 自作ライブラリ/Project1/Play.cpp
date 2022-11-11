@@ -78,7 +78,7 @@ void Play::Initialize()
 	Object3D::SetLightGroup(lightGroup.get());
 
 	Audio::StopBGM("BGM_InGame");
-	Audio::PlayBGM("BGM_InGame", Audio::volume_bgm * 0.05f);
+	Audio::PlayBGM("BGM_InGame", Audio::volume_bgm * 0.3f);
 
 	timer->Initialize();
 	timer->Start();
@@ -93,9 +93,6 @@ void Play::Initialize()
 	hitGoal_prev = false;
 
 	playerForwordVec_stock = {};
-
-	data_prev_R = 0;
-	data_prev_L = 0;
 
 	objectManager->Reset();
 
@@ -143,44 +140,64 @@ void Play::Initialize()
 
 void Play::Update()
 {
-	//////////////////////////////
 	//超音波センサ
-	const float range_default = 400.0f;//無風状態のセンサーの上限値(!!要調整!!)
-	int data_R = Arudino::GetData_ultrasonic(0);
-	int data_L = Arudino::GetData_ultrasonic(1);
+	//////////////////////////////
+	//範囲値
+	const float range_Min = 450.0f;
+	const float range_Max = 530.0f;
+	//マイコンからの値
+	const int data_Origin_R = Arudino::GetData_ultrasonic(0);
+	const int data_Origin_L = Arudino::GetData_ultrasonic(1);
 
-	if (data_R >= range_default)//エラー回避
+	//0.0～1.0に ※近いと0.0
+	float data_ZeroToOne_R = 0.0f;
+	float data_ZeroToOne_L = 0.0f;
+
+	if (data_Origin_R > range_Max)//エラー回避
 	{
-		data_R = data_prev_R;
+		data_ZeroToOne_R = 1.0f;
+		printf("OUT_R\n");
+	}
+	else if (data_Origin_R < range_Min)//エラー回避
+	{
+		data_ZeroToOne_R = 0.0f;
+		printf("NEAR_R\n");
 	}
 	else
 	{
-		data_R = range_default - data_R;
+		//正規化
+		data_ZeroToOne_R = (data_Origin_R - range_Min) / (range_Max - range_Min);
 	}
-	if (data_L >= range_default)//エラー回避
+
+	if (data_Origin_L > range_Max)//エラー回避
 	{
-		data_L = data_prev_L;
+		data_ZeroToOne_L = 1.0f;
+		printf("OUT_L\n");
+	}
+	else if (data_Origin_L < range_Min)//エラー回避
+	{
+		data_ZeroToOne_L = 0.0f;
+		printf("NEAR_L\n");
 	}
 	else
 	{
-		data_L = range_default - data_L;
+		//正規化
+		data_ZeroToOne_L = (data_Origin_L - range_Min) / (range_Max - range_Min);
 	}
+
+	//1.0～0.0に ※近いと1.0
+	float data_OneToZero_R = (data_ZeroToOne_R - 1.0f) * -1.0f;
+	float data_OneToZero_L = (data_ZeroToOne_L - 1.0f) * -1.0f;
 
 	//風の強さ
-	float power = (data_R + data_L) / 2;//2つの値の平均
-	power /= range_default;//0～1に
+	float power = (data_OneToZero_R + data_OneToZero_L) / 2;//2つの値の平均
 	player->SetPower(power);
 
 	//風の向き
-	float angle = data_L - data_R;//2つの値の差
-	angle /= range_default;//-1～0～1に
+	float angle = data_OneToZero_L - data_OneToZero_R;//2つの値の差
 	angle *= 90;//0～180に
 	angle += 90;
 	player->SetAngle(angle);
-
-	//前フレームの状態を保持
-	data_prev_R = data_R;
-	data_prev_L = data_L;
 	//////////////////////////////
 
 
