@@ -32,6 +32,11 @@ private:
 	bool PlayerHitGoal();
 	bool PlayerHitObstacle();
 
+	//
+	void ConvertDatas_Ultrasonic();
+	//
+	void StockDatas_Ultrasonic();
+
 	std::unique_ptr<InGameCamera> camera;
 	std::unique_ptr<LightGroup> lightGroup;
 	ObjectManager* objectManager = nullptr;
@@ -63,4 +68,12 @@ private:
 	//è·äQï®
 	std::vector<CourseObstacle*> courses_obstacle;
 	Vector3 playerForwordVec_stock = {};
+
+
+	//
+	static const int stockDatasNum = 10;
+	float inputDatas_power[stockDatasNum];
+	float inputDatas_angle[stockDatasNum];
+	int count_stockDatas = 0;
+
 };

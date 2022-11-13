@@ -77,8 +77,10 @@ void Play::Initialize()
 	lightGroup->SetDirLightDir(0, { 0.0f,-1.0f,0.5f,1 });
 	Object3D::SetLightGroup(lightGroup.get());
 
+	ParticleManager::GetInstance()->ClearDeadEffect();
+
 	Audio::StopBGM("BGM_InGame");
-	Audio::PlayBGM("BGM_InGame", Audio::volume_bgm * 0.3f);
+	Audio::PlayBGM("BGM_InGame", Audio::volume_bgm * 0.05f);
 
 	timer->Initialize();
 	timer->Start();
@@ -100,15 +102,8 @@ void Play::Initialize()
 	grounds.clear();
 	courses_obstacle.clear();
 
-	//RR_スタート地点
-	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 5, -CourseBuilder::onesize / 2};
-	//RR_ゴール前
-	//Vector3 playerPosition = {-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 5, -10 * CourseBuilder::onesize};
 	//Curve_スタート地点
 	Vector3 playerPosition = { 0, 5, -16 * CourseBuilder::onesize };
-	//test_中央
-	//Vector3 playerPosition = { 0, 5, 0 };
-
 	player = new Player(playerPosition);
 	objectManager->Add(player);
 
@@ -120,11 +115,7 @@ void Play::Initialize()
 	objectManager->Add(ground);
 	grounds.push_back(ground);
 
-	//RR_ゴール地点
-	//goal = new GoalSquare(
-	//	Vector3(-10 * CourseBuilder::onesize + (CourseBuilder::onesize / 2), 1, -3 * CourseBuilder::onesize),
-	//	Vector3(3 * CourseBuilder::onesize, CourseBuilder::onesize, CourseBuilder::onesize));
-	//Curve_ゴール地点
+	//ゴール
 	goal = new GoalSquare(
 		Vector3(0, 1, 14 * CourseBuilder::onesize),
 		Vector3(3 * CourseBuilder::onesize, CourseBuilder::onesize, CourseBuilder::onesize));
@@ -135,70 +126,20 @@ void Play::Initialize()
 	//objectManager->Add(obstacle);
 	//courses_obstacle.push_back(obstacle);
 
-	ParticleManager::GetInstance()->ClearDeadEffect();
+
+	for (int i = 0; i < stockDatasNum; i++)
+	{
+		inputDatas_power[i] = 0.0f;
+		inputDatas_angle[i] = 0.0f;
+	}
+	count_stockDatas = 0;
 }
 
 void Play::Update()
 {
 	//超音波センサ
-	//////////////////////////////
-	//範囲値
-	const float range_Min = 450.0f;
-	const float range_Max = 530.0f;
-	//マイコンからの値
-	const int data_Origin_R = Arudino::GetData_ultrasonic(0);
-	const int data_Origin_L = Arudino::GetData_ultrasonic(1);
-
-	//0.0～1.0に ※近いと0.0
-	float data_ZeroToOne_R = 0.0f;
-	float data_ZeroToOne_L = 0.0f;
-
-	if (data_Origin_R > range_Max)//エラー回避
-	{
-		data_ZeroToOne_R = 1.0f;
-		printf("OUT_R\n");
-	}
-	else if (data_Origin_R < range_Min)//エラー回避
-	{
-		data_ZeroToOne_R = 0.0f;
-		printf("NEAR_R\n");
-	}
-	else
-	{
-		//正規化
-		data_ZeroToOne_R = (data_Origin_R - range_Min) / (range_Max - range_Min);
-	}
-
-	if (data_Origin_L > range_Max)//エラー回避
-	{
-		data_ZeroToOne_L = 1.0f;
-		printf("OUT_L\n");
-	}
-	else if (data_Origin_L < range_Min)//エラー回避
-	{
-		data_ZeroToOne_L = 0.0f;
-		printf("NEAR_L\n");
-	}
-	else
-	{
-		//正規化
-		data_ZeroToOne_L = (data_Origin_L - range_Min) / (range_Max - range_Min);
-	}
-
-	//1.0～0.0に ※近いと1.0
-	float data_OneToZero_R = (data_ZeroToOne_R - 1.0f) * -1.0f;
-	float data_OneToZero_L = (data_ZeroToOne_L - 1.0f) * -1.0f;
-
-	//風の強さ
-	float power = (data_OneToZero_R + data_OneToZero_L) / 2;//2つの値の平均
-	player->SetPower(power);
-
-	//風の向き
-	float angle = data_OneToZero_L - data_OneToZero_R;//2つの値の差
-	angle *= 90;//0～180に
-	angle += 90;
-	player->SetAngle(angle);
-	//////////////////////////////
+	ConvertDatas_Ultrasonic();
+	StockDatas_Ultrasonic();
 
 
 #ifdef _DEBUG
@@ -356,9 +297,9 @@ bool Play::PlayerOnGround()
 		float bZB = poition_ground.z + (scale_ground.z / 2.0f);//Bの奥
 
 		onGround = onGround ||
-			(aXR > bXL && aXL < bXR&&
-				aYU > bYD && aYD < bYU&&
-				aZF < bZB&& aZB > bZF);
+			(aXR > bXL && aXL < bXR &&
+				aYU > bYD && aYD < bYU &&
+				aZF < bZB && aZB > bZF);
 	}
 
 	return onGround;
@@ -392,9 +333,9 @@ bool Play::PlayerHitWall()
 		float bZB = poition_course.z + (scale_course.z / 2.0f);//Bの奥
 
 		courseOut = courseOut ||
-			(aXR > bXL && aXL < bXR&&
-				aYU > bYD && aYD < bYU&&
-				aZF < bZB&& aZB > bZF);
+			(aXR > bXL && aXL < bXR &&
+				aYU > bYD && aYD < bYU &&
+				aZF < bZB && aZB > bZF);
 	}
 
 	return courseOut;
@@ -423,9 +364,9 @@ bool Play::PlayerHitGoal()
 	float bZF = poition_goal.z - (scale_goal.z / 2.0f);//Bの前
 	float bZB = poition_goal.z + (scale_goal.z / 2.0f);//Bの奥
 
-	bool hitGoal = aXR > bXL && aXL < bXR&&
-		aYU > bYD && aYD < bYU&&
-		aZF < bZB&& aZB > bZF;
+	bool hitGoal = aXR > bXL && aXL < bXR &&
+		aYU > bYD && aYD < bYU &&
+		aZF < bZB && aZB > bZF;
 
 	return hitGoal;
 }
@@ -458,10 +399,97 @@ bool Play::PlayerHitObstacle()
 		float bZB = poition_obstacle.z + (scale_obstacle.z / 2.0f);//Bの奥
 
 		hitObstacle = hitObstacle ||
-			(aXR > bXL && aXL < bXR&&
-				aYU > bYD && aYD < bYU&&
-				aZF < bZB&& aZB > bZF);
+			(aXR > bXL && aXL < bXR &&
+				aYU > bYD && aYD < bYU &&
+				aZF < bZB && aZB > bZF);
 	}
 
 	return hitObstacle;
+}
+
+void Play::ConvertDatas_Ultrasonic()
+{
+	//範囲値
+	const float range_Min = 450.0f;
+	const float range_Max = 530.0f;
+
+	//マイコンからの値
+	const int data_Origin_R = Arudino::GetData_ultrasonic(0);
+	const int data_Origin_L = Arudino::GetData_ultrasonic(1);
+
+	//0.0～1.0に ※近いと0.0
+	float data_ZeroToOne_R = 0.0f;
+	float data_ZeroToOne_L = 0.0f;
+
+	if (data_Origin_R > range_Max)//エラー回避
+	{
+		data_ZeroToOne_R = 1.0f;
+		printf("OUT_R\n");
+	}
+	else if (data_Origin_R < range_Min)//エラー回避
+	{
+		data_ZeroToOne_R = 0.0f;
+		printf("NEAR_R\n");
+	}
+	else
+	{
+		//正規化
+		data_ZeroToOne_R = (data_Origin_R - range_Min) / (range_Max - range_Min);
+	}
+
+	if (data_Origin_L > range_Max)//エラー回避
+	{
+		data_ZeroToOne_L = 1.0f;
+		printf("OUT_L\n");
+	}
+	else if (data_Origin_L < range_Min)//エラー回避
+	{
+		data_ZeroToOne_L = 0.0f;
+		printf("NEAR_L\n");
+	}
+	else
+	{
+		//正規化
+		data_ZeroToOne_L = (data_Origin_L - range_Min) / (range_Max - range_Min);
+	}
+
+	//1.0～0.0に ※近いと1.0
+	float data_OneToZero_R = (data_ZeroToOne_R - 1.0f) * -1.0f;
+	float data_OneToZero_L = (data_ZeroToOne_L - 1.0f) * -1.0f;
+
+
+	//風の強さ
+	float power = (data_OneToZero_R + data_OneToZero_L) / 2;//2つの値の平均
+	inputDatas_power[count_stockDatas] = power;
+
+	//風の向き
+	float angle = data_OneToZero_L - data_OneToZero_R;//2つの値の差
+	angle *= 90;//0～180に
+	angle += 90;
+	inputDatas_angle[count_stockDatas] = angle;
+}
+
+void Play::StockDatas_Ultrasonic()
+{
+	if (count_stockDatas >= stockDatasNum - 1)
+	{
+		float power = 0.0f;
+		float angle = 0.0f;
+		for (int i = 0; i < stockDatasNum; i++)
+		{
+			power += inputDatas_power[i];
+			angle += inputDatas_angle[i];
+		}
+		power /= stockDatasNum;
+		angle /= stockDatasNum;
+
+		//平均値を代入
+		player->SetPower(power);
+		player->SetAngle(angle);
+
+		count_stockDatas = 0;
+
+		return;
+	}
+	count_stockDatas++;
 }

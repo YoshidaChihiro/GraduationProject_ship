@@ -53,7 +53,7 @@ void Player::Initialize()
 	power = 0.0f;
 
 	hitBox.SetPosition(position);
-	hitBox.SetScale(Vector3(1,0.7f,1.5f) * scale);
+	hitBox.SetScale(Vector3(1.0f,0.7f,1.5f) * scale);
 }
 
 void Player::Update()
@@ -115,8 +115,8 @@ void Player::DrawReady()
 		ImGui::End();
 
 		ImGui::Begin("DeviceInformation");
-		ImGui::DragFloat("angle_device", &angle_device, 1.0f, 0.0f, 180.0f);
-		ImGui::DragFloat("power_device", &power_device, 0.01f, -1.0f, 1.0f);
+		ImGui::Text("angle_device : %f\n", angle_device);
+		ImGui::Text("power_device : %f\n", power_device);
 		ImGui::Text("angle : %f\n", angle);
 		ImGui::Text("power : %f\n", power);
 		ImGui::End();
