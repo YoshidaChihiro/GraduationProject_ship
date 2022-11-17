@@ -9,7 +9,7 @@ public:
 	static void SendData();
 	static void End();
 
-	static UINT16 GetData_ultrasonic(const int arg_arrayNum);
+	static UINT16 GetData_distanceSensor(const int arg_arrayNum);
 
 	static bool GetData_microSwitch();
 	static bool GetData_microSwitch_Trigger();
@@ -22,8 +22,8 @@ private:
 	static UINT8 receiveData[allDataNum_receive];
 	static UINT8 sendData;
 
-	//超音波センサ
-	static UINT16 datas_ultrasonic[2];
+	//距離センサ
+	static UINT16 datas_distanceSensor[2];
 
 	//マイクロスイッチ
 	static UINT8 datas_microSwitch;

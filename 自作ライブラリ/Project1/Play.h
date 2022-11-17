@@ -34,7 +34,6 @@ private:
 
 	//
 	void ConvertDatas_Ultrasonic();
-	//
 	void StockDatas_Ultrasonic();
 
 	std::unique_ptr<InGameCamera> camera;
@@ -71,7 +70,8 @@ private:
 
 
 	//
-	static const int stockDatasNum = 10;
+	bool isUsedInput_distanceSensor = false;
+	static const int stockDatasNum = 20;
 	float inputDatas_power[stockDatasNum];
 	float inputDatas_angle[stockDatasNum];
 	int count_stockDatas = 0;

@@ -8,8 +8,8 @@ bool Arudino::ready = false;
 UINT8 Arudino::receiveData[] = {};
 UINT8 Arudino::sendData = {};
 
-//超音波センサ
-UINT16 Arudino::datas_ultrasonic[] = {};
+//距離センサ
+UINT16 Arudino::datas_distanceSensor[] = {};
 
 //マイクロスイッチ
 UINT8 Arudino::datas_microSwitch = 0;
@@ -75,14 +75,14 @@ void Arudino::ReceiveData()
 		printf("NG5\n");
 	}
 
-	//超音波センサ
+	//距離センサ
 	UINT16 data1 = (UINT16)(receiveData[0] << 8) | (UINT16)receiveData[1];
 	UINT16 data2 = (UINT16)(receiveData[2] << 8) | (UINT16)receiveData[3];
 	printf("data1 : %u\n", data1);
 	printf("data2 : %u\n", data2);
 	printf("\n");
-	datas_ultrasonic[0] = data1;
-	datas_ultrasonic[1] = data2;
+	datas_distanceSensor[0] = data1;
+	datas_distanceSensor[1] = data2;
 
 	//マイクロスイッチ
 	isPressed_prev = datas_microSwitch;
@@ -130,9 +130,9 @@ void Arudino::End()
 	CloseHandle(Portarduino);
 }
 
-UINT16 Arudino::GetData_ultrasonic(const int arg_arrayNum)
+UINT16 Arudino::GetData_distanceSensor(const int arg_arrayNum)
 {
-	return datas_ultrasonic[arg_arrayNum];
+	return datas_distanceSensor[arg_arrayNum];
 }
 
 bool Arudino::GetData_microSwitch()

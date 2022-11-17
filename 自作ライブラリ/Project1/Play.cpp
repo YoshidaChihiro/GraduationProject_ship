@@ -127,6 +127,7 @@ void Play::Initialize()
 	//courses_obstacle.push_back(obstacle);
 
 
+	isUsedInput_distanceSensor = true;
 	for (int i = 0; i < stockDatasNum; i++)
 	{
 		inputDatas_power[i] = 0.0f;
@@ -137,10 +138,12 @@ void Play::Initialize()
 
 void Play::Update()
 {
-	//超音波センサ
-	ConvertDatas_Ultrasonic();
-	StockDatas_Ultrasonic();
-
+	//距離センサ
+	if (isUsedInput_distanceSensor)
+	{
+		ConvertDatas_Ultrasonic();
+		StockDatas_Ultrasonic();
+	}
 
 #ifdef _DEBUG
 	//初期化
@@ -248,6 +251,10 @@ void Play::Update()
 
 void Play::PreDraw()
 {
+	ImGui::Begin("Input Mode");
+	ImGui::Checkbox("distanceSensor", &isUsedInput_distanceSensor);
+	ImGui::End();
+
 	rank->Draw();
 	speedMeter->Draw();
 
@@ -414,8 +421,8 @@ void Play::ConvertDatas_Ultrasonic()
 	const float range_Max = 530.0f;
 
 	//マイコンからの値
-	const int data_Origin_R = Arudino::GetData_ultrasonic(0);
-	const int data_Origin_L = Arudino::GetData_ultrasonic(1);
+	const int data_Origin_R = Arudino::GetData_distanceSensor(0);
+	const int data_Origin_L = Arudino::GetData_distanceSensor(1);
 
 	//0.0～1.0に ※近いと0.0
 	float data_ZeroToOne_R = 0.0f;
