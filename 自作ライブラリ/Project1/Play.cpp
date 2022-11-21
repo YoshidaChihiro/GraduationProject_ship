@@ -141,8 +141,8 @@ void Play::Update()
 	//‹——£ƒZƒ“ƒT
 	if (isUsedInput_distanceSensor)
 	{
-		ConvertDatas_Ultrasonic();
-		StockDatas_Ultrasonic();
+		ConvertDatas_distanceSensor();
+		StockDatas_distanceSensor();
 	}
 
 #ifdef _DEBUG
@@ -414,7 +414,7 @@ bool Play::PlayerHitObstacle()
 	return hitObstacle;
 }
 
-void Play::ConvertDatas_Ultrasonic()
+void Play::ConvertDatas_distanceSensor()
 {
 	//”ÍˆÍ’l
 	const float range_Min = 450.0f;
@@ -476,7 +476,7 @@ void Play::ConvertDatas_Ultrasonic()
 	inputDatas_angle[count_stockDatas] = angle;
 }
 
-void Play::StockDatas_Ultrasonic()
+void Play::StockDatas_distanceSensor()
 {
 	if (count_stockDatas >= stockDatasNum - 1)
 	{

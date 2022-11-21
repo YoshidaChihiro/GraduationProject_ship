@@ -33,8 +33,8 @@ private:
 	bool PlayerHitObstacle();
 
 	//
-	void ConvertDatas_Ultrasonic();
-	void StockDatas_Ultrasonic();
+	void ConvertDatas_distanceSensor();
+	void StockDatas_distanceSensor();
 
 	std::unique_ptr<InGameCamera> camera;
 	std::unique_ptr<LightGroup> lightGroup;

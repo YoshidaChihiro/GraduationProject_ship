@@ -36,14 +36,18 @@ void Player::Initialize()
 	gravity = {};
 
 	isHitObstacle = false;
-	count_hitObstacle = 0;
-	count_hitObstacle_rotZ = 0;
-	pos_backStep = {};
-	pos_hitStart = {};
-	rotation_hitStart_y = 0.0f;
-	rotation_hitStart_z = 0.0f;
-	rotEnd_Z = 0;
-	count_hitObstacle_rotEndZ = 0;
+
+	count_backStep = 0;
+	pos_backStep_start = {};
+	pos_backStep_end = {};
+
+	count_slipY = 0;
+	rotation_slipY_start = 0.0f;
+	rotation_slipY_end = 0.0f;
+
+	count_slipZ = 0;
+	rotation_slipZ_start = 0.0f;
+	rotation_slipZ_end = 0.0f;
 
 	isCanInput = false;
 
@@ -74,7 +78,8 @@ void Player::Update()
 #ifdef _DEBUG
 	MovePos_key();
 #endif
-	MovePos_Obstacle();
+	//壁や障害物との衝突時
+	HitActions();
 
 	//落下
 	if (!onGround)
@@ -144,19 +149,45 @@ void Player::SetOnGround(const bool arg_onGround)
 
 void Player::HitObstacle()
 {
+	if (isHitObstacle)
+	{
+		return;
+	}
+
 	isHitObstacle = true;
-	pos_backStep = position + -velocity * 30.0f;
-	pos_hitStart = position;
-	rotation_hitStart_y = rotation.y;
-	rotation_hitStart_z = rotation.z;
-	rotEnd_Z = 35;
-	count_hitObstacle_rotEndZ = 0;
+
+	InitBackStep();
+	InitSlipY();
+	InitSlipZ();
+
 	Audio::PlaySE("SE_collision", Audio::volume_se * 0.8f);
 }
 
 bool Player::GetIsHitObstacle()
 {
 	return isHitObstacle;
+}
+
+void Player::InitBackStep()
+{
+	count_backStep = 0;
+	pos_backStep_start = position;
+	pos_backStep_end = position + -velocity * 30.0f;
+}
+
+void Player::InitSlipY()
+{
+	count_slipY = 0;
+	rotation_slipY_start = rotation.y;
+	rotation_slipY_end = rotation.y + 360.0f;
+}
+
+void Player::InitSlipZ()
+{
+	count_slipZ = 0;
+	rotation_slipZ_start = rotation.z;
+	rotation_slipZ_end = 35.0f;
+	count_slipZ_end = 0;
 }
 
 void Player::SetIsCanInput(const bool arg_isCanInput)
@@ -250,48 +281,94 @@ void Player::MovePos_linear()
 	}
 }
 
-void Player::MovePos_Obstacle()
+void Player::HitActions()
 {
 	if (!isHitObstacle)
 	{
 		return;
 	}
-	//カウント
-	const int limit_obstacle = 60;
-	if (count_hitObstacle > limit_obstacle)
+	isCanInput = false;
+
+	//移動と回転
+	bool isEnd = true;
+	const int count_limit = 60;
+	const int count_slipZ = 5;
+	isEnd = BackStep(count_limit) && isEnd;
+	isEnd = SlipY(count_limit) && isEnd;
+	isEnd = SlipZ(count_limit, count_slipZ) && isEnd;
+
+	//全行動の終了時
+	if (isEnd)
 	{
 		isHitObstacle = false;
-		count_hitObstacle = 0;
 		isCanInput = true;
 		power = 0.0f;
-		rotation.y = rotation_hitStart_y;
+		//
+		rotation.y = rotation_slipY_start;
+		//
 		rotation.z = 0.0f;
-		return;
 	}
-	const int rotNum_z = 5;//Z軸の揺れ回数
-	if (count_hitObstacle_rotZ > limit_obstacle / rotNum_z)
+
+}
+
+bool Player::BackStep(const int arg_limit)
+{
+	//
+	if (count_backStep > arg_limit)
 	{
-		count_hitObstacle_rotZ = 0;
-		rotation_hitStart_z = rotation.z;
-		count_hitObstacle_rotEndZ++;
-		rotEnd_Z *= -1;
-		if (count_hitObstacle_rotEndZ == rotNum_z - 1)
+		return true;
+	}
+
+	//
+	position.x = Easing::EaseOutCirc(pos_backStep_start.x, pos_backStep_end.x, arg_limit, count_backStep);
+	position.y = Easing::EaseOutCirc(pos_backStep_start.y, pos_backStep_end.y, arg_limit, count_backStep);
+	position.z = Easing::EaseOutCirc(pos_backStep_start.z, pos_backStep_end.z, arg_limit, count_backStep);
+
+	count_backStep++;
+
+	return false;
+}
+
+bool Player::SlipY(const int arg_limit)
+{
+	//
+	if (count_slipY > arg_limit)
+	{
+		return true;
+	}
+
+	//
+	rotation.y = Easing::EaseOutCirc(rotation_slipY_start, rotation_slipY_end, arg_limit, count_slipY);
+
+	count_slipY++;
+
+	return false;
+}
+
+bool Player::SlipZ(const int arg_limit, const int arg_countTotal)
+{
+	//
+	if (count_slipZ > arg_limit / arg_countTotal)
+	{
+		count_slipZ = 0;
+		rotation_slipZ_start = rotation.z;
+		rotation_slipZ_end *= -1;//逆方向に
+
+		count_slipZ_end++;//揺れの回数をカウント
+		if (count_slipZ_end == arg_countTotal - 1)
 		{
-			rotEnd_Z = 0.0f;
+			rotation_slipZ_end = 0.0f;//最後は0
+		}
+		else if (count_slipZ_end >= arg_countTotal)
+		{
+			return true;
 		}
 	}
 
-	isCanInput = false;
+	//
+	rotation.z = Easing::EaseOutCirc(rotation_slipZ_start, rotation_slipZ_end, arg_limit / arg_countTotal, count_slipZ);
 
-	//スリップ
-	rotation.y = Easing::EaseOutCirc(rotation_hitStart_y, rotation_hitStart_y + 360.0f, limit_obstacle, count_hitObstacle);
-	rotation.z = Easing::EaseOutCirc(rotation_hitStart_z, rotEnd_Z, limit_obstacle / rotNum_z, count_hitObstacle_rotZ);
+	count_slipZ++;
 
-	//バックステップ
-	position.x = Easing::EaseOutCirc(pos_hitStart.x, pos_backStep.x, limit_obstacle, count_hitObstacle);
-	position.y = Easing::EaseOutCirc(pos_hitStart.y, pos_backStep.y, limit_obstacle, count_hitObstacle);
-	position.z = Easing::EaseOutCirc(pos_hitStart.z, pos_backStep.z, limit_obstacle, count_hitObstacle);
-
-	count_hitObstacle++;
-	count_hitObstacle_rotZ++;
+	return false;
 }

@@ -21,6 +21,10 @@ public:
 	//•Ç‚âáŠQ•¨‚É‚Ô‚Â‚©‚Á‚½
 	void HitObstacle();
 	bool GetIsHitObstacle();
+	//Še‰Šú‰»
+	void InitBackStep();
+	void InitSlipY();
+	void InitSlipZ();
 
 	//“ü—Í‚ğó‚¯•t‚¯‚é‚©
 	void SetIsCanInput(const bool arg_isCanInput);
@@ -42,7 +46,10 @@ private:
 	void MovePos_linear();
 
 	//•Ç‚âáŠQ•¨‚Æ‚ÌÕ“Ë
-	void MovePos_Obstacle();
+	void HitActions();
+	bool BackStep(const int arg_limit);
+	bool SlipY(const int arg_limit);
+	bool SlipZ(const int arg_limit, const int arg_countTotal);
 
 
 	OBJModel* myModel = nullptr;
@@ -59,14 +66,19 @@ private:
 
 	//áŠQ•¨Õ“Ë”»’è
 	bool isHitObstacle = false;
-	int count_hitObstacle = 0;
-	int count_hitObstacle_rotZ = 0;
-	Vector3 pos_backStep = {};
-	Vector3 pos_hitStart = {};
-	float rotation_hitStart_y = 0.0f;
-	float rotation_hitStart_z = 0.0f;
-	int rotEnd_Z = 0;
-	int count_hitObstacle_rotEndZ = 0;
+	//’µ‚Ë•Ô‚è
+	int count_backStep = 0;
+	Vector3 pos_backStep_start = {};
+	Vector3 pos_backStep_end = {};
+	//‰ñ“]Y
+	int count_slipY = 0;
+	float rotation_slipY_start = 0.0f;
+	float rotation_slipY_end = 0.0f;
+	//‰ñ“]Z
+	int count_slipZ = 0;
+	float rotation_slipZ_start = 0.0f;
+	float rotation_slipZ_end = 0.0f;
+	int count_slipZ_end = 0;
 
 	//“ü—Íó•t
 	bool isCanInput = false;
